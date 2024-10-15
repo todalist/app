@@ -45,7 +45,7 @@ func PasswordLoginRoute(c fiber.Ctx) error {
 	jwtConfig := globals.CONF.Auth.Jwt
 	claims := &globals.AuthenticationClaims{
 		TokenUser: globals.TokenUser{
-			UserId: user.ID,
+			UserID: user.ID,
 		},
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(now.Add(time.Second * time.Duration(jwtConfig.JwtExpireSec))),

@@ -7,7 +7,7 @@ import (
 )
 
 type TokenUser struct {
-	UserId uint
+	UserID uint
 }
 
 type AuthenticationClaims struct {
@@ -34,7 +34,8 @@ func GetTokenUser(c fiber.Ctx) (*TokenUser, error) {
 func MustGetTokenUser(c fiber.Ctx) *TokenUser {
 	t, e := GetTokenUser(c)
 	if e != nil {
-		LOG.Fatal("no token user found")
+		LOG.Error("no token user found")
+		panic(e)
 	}
 	return t
 }

@@ -5,7 +5,6 @@ import (
 	"dailydo.fe1.xyz/internal/globals"
 	"dailydo.fe1.xyz/internal/models"
 	"dailydo.fe1.xyz/internal/services"
-
 	"github.com/gofiber/fiber/v3"
 	"go.uber.org/zap"
 )
@@ -13,7 +12,7 @@ import (
 func UserInfoRoute(c fiber.Ctx) error {
 	tokenUser := globals.MustGetTokenUser(c)
 	user, err := services.GetUser(&models.User{
-		BaseModel: models.BaseModel{ID: tokenUser.UserId},
+		BaseModel: models.BaseModel{ID: tokenUser.UserID},
 	}, true)
 	if err != nil {
 		globals.LOG.Info("get user error", zap.Error(err))
@@ -34,7 +33,7 @@ func RewritePasswordRoute(c fiber.Ctx) error {
 		return fiber.ErrBadRequest
 	}
 	err := services.RewritePassword(&models.User{
-		BaseModel: models.BaseModel{ID: tokenUser.UserId}},
+		BaseModel: models.BaseModel{ID: tokenUser.UserID}},
 		form.OldPassword,
 		form.NewPassword)
 	return c.JSON(common.Or(true, err))

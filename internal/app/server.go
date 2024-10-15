@@ -16,6 +16,10 @@ import (
 	"go.uber.org/zap"
 )
 
+var (
+	todoRoute routes.TodoRoute
+)
+
 func NewServer(conf *globals.AppConfig) *fiber.App {
 	app := fiber.New(fiber.Config{
 		Immutable: true,
@@ -64,5 +68,6 @@ func NewServer(conf *globals.AppConfig) *fiber.App {
 	root := app.Group(conf.Server.PathPrefix)
 	appSys.RegisterRoutes(root)
 	routes.RegisterUserRoutes(root)
+	todoRoute.Register(root)
 	return app
 }
