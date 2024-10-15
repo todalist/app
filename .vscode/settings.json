@@ -1,0 +1,13 @@
+{
+    "cSpell.words": [
+        "redislock"
+    ],
+    "go.addTags": {
+        "tags": "json",
+        "options": "",
+        "promptForTags": false,
+        "transform": "camelcase",
+        "template": ""
+    },
+    "Codegeex.GenerationPreference": "automatic",
+}

@@ -1,0 +1,25 @@
+server:
+  port: 8123
+  pathPrefix: /api/v1
+  cors:
+    enable: false
+    origins: 
+      - http://localhost:3002
+      - http://localhost:5173
+db:
+  host: postgres
+  user: postgres
+  password: fyang
+  database: dailydo
+  port: 5432
+auth:
+  whiteList:
+    - /api/v1/sys/authentication/passwordLogin
+  jwt:
+    jwtExpireSec: 94608000 # three years
+    jwtIssuer: dailydo.fe1.xyz
+    jwtSecret: 0075677cacbfa15dca6c2ff99cb032da2778dfe0dc6c0a04bd21d71634267baef6106528469d08dd79fbe13a6ecc431b0b7d92df0c72b5a1affe56254bf6acf8f25ffc8b12bb909d3317ab600aa2971b5fad0c2747431960d650887a083602eef5b66a600678283c35a7246cb05ce462ee11a06d7f403e27f8e0bc9093e39ccb91663d38a8695659fbb1431b46c02ff3868001d93661c70c5d2c780ce5a9c41d26d0ccaf1e14a941ee914426a1dc5712fe02a9d8871c8140411923d56933ebe2bffb11bae13a0580b3927994d1c0f760e6b9e2824c33935744afb30996d7065989e53071537ae2e041028d70b6d694225732180b22a05c13013315b7acab043b
+redis:
+  host: redis
+  port: 6379
+  db: 4

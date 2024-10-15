@@ -1,0 +1,1 @@
+GET http://localhost:5173/api/v1/grantCode/validate?code=CRMKUCD3HIDRLOS7SQL03CEU HTTP/1.1

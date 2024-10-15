@@ -1,0 +1,6 @@
+package common
+
+const (
+	APP_CONFIG_ENV_KEY = "APP_CONFIG_FILE"
+	APP_DEVELOPMENT_ENV_KEY = "APP_DEVELOPMENT"
+)

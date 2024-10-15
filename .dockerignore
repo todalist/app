@@ -1,0 +1,7 @@
+.git
+.vscode
+.dockerignore
+__debug**
+.gitignore
+.github
+.devcontainer
