@@ -1,7 +1,6 @@
 package sys
 
 import (
-	"time"
 	"dailydo.fe1.xyz/internal/common"
 	"dailydo.fe1.xyz/internal/globals"
 	"dailydo.fe1.xyz/internal/models"
@@ -10,6 +9,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
+	"time"
 )
 
 type PasswordLoginForm struct {
@@ -26,9 +26,9 @@ func PasswordLoginRoute(c fiber.Ctx) error {
 	if err := common.Valid(params); err != nil {
 		return fiber.ErrBadRequest
 	}
-	user, err := services.GetUser(
+	user, err := services.PutGetUser(
 		&models.User{Username: params.Username},
-		false,
+		params.Password,
 	)
 	if err != nil || user == nil {
 		globals.LOG.Info("user login error", zap.Any("err", err))

@@ -3,7 +3,6 @@ package services
 import (
 	"dailydo.fe1.xyz/internal/globals"
 	"dailydo.fe1.xyz/internal/models"
-
 	"github.com/gofiber/fiber/v3"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
