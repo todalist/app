@@ -10,14 +10,14 @@ type Todo struct {
 	BaseModel
 	Title    string    `json:"title" validate:"required"`
 	Content  string    `json:"content"`
-	UserID   uint       `json:"userId"`
+	UserID   uint      `json:"userId"`
 	Status   int       `json:"status"`
 	Deadline time.Time `json:"deadline"`
 }
 
 type TodoQuerier struct {
-	ID        *uint              `json:"id" uri:"id"`
-	UserID    *uint              `json:"userId"`
+	ID        *uint             `json:"id" uri:"id"`
+	UserID    *uint             `json:"userId"`
 	TimeRange *common.TimeRange `json:"timeRange"`
 	Status    *int              `json:"status"`
 	common.Pager
