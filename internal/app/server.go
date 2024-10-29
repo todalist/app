@@ -1,12 +1,12 @@
 package app
 
 import (
-	"errors"
 	"dailydo.fe1.xyz/internal/common"
 	"dailydo.fe1.xyz/internal/globals"
 	"dailydo.fe1.xyz/internal/middlewares"
 	"dailydo.fe1.xyz/internal/routes"
 	appSys "dailydo.fe1.xyz/internal/sys"
+	"errors"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/cors"
@@ -17,7 +17,8 @@ import (
 )
 
 var (
-	todoRoute routes.TodoRoute
+	todoRoute       routes.TodoRoute
+	collectionRoute routes.CollectionRoute
 )
 
 func NewServer(conf *globals.AppConfig) *fiber.App {
@@ -69,5 +70,6 @@ func NewServer(conf *globals.AppConfig) *fiber.App {
 	appSys.RegisterRoutes(root)
 	routes.RegisterUserRoutes(root)
 	todoRoute.Register(root)
+	collectionRoute.Register(root)
 	return app
 }

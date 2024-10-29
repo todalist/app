@@ -13,7 +13,7 @@ import (
 )
 
 type PasswordLoginForm struct {
-	Username string `json:"username" validate:"required"`
+	Email string `json:"email" validate:"required"`
 	Password string `json:"password" validate:"required"`
 }
 
@@ -27,7 +27,7 @@ func PasswordLoginRoute(c fiber.Ctx) error {
 		return fiber.ErrBadRequest
 	}
 	user, err := services.PutGetUser(
-		&models.User{Username: params.Username},
+		&models.User{Email: params.Email},
 		params.Password,
 	)
 	if err != nil || user == nil {
@@ -36,7 +36,7 @@ func PasswordLoginRoute(c fiber.Ctx) error {
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(params.Password)); err != nil {
 		globals.LOG.Info("password compare failed", zap.Uint("userId", user.ID),
-			zap.String("username", params.Username),
+			zap.String("username", params.Email),
 			zap.Error(err),
 		)
 		return fiber.ErrUnauthorized

@@ -31,8 +31,13 @@ func PutGetUser(filter *models.User, pwd string) (user *models.User, err error) 
 	if hash, err = bcrypt.GenerateFromPassword([]byte(pwd), bcrypt.DefaultCost); err != nil {
 		return
 	}
+	username := filter.Username
+	if username == "" {
+		username = filter.Email
+	}
 	user = &models.User{
-		Username: filter.Username,
+		Username: username,
+		Email:    filter.Email,
 		Password: string(hash),
 	}
 	if err = globals.DB.Create(user).Error; err != nil {

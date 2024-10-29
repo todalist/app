@@ -14,7 +14,6 @@
             "env": {
                 "APP_CONFIG_FILE": "application-dev.yaml",
                 "APP_DEVELOPMENT": "1",
-                "DEBUG": "tea"
             }
         }
     ]
