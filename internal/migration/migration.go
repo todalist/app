@@ -9,6 +9,7 @@ import (
 func MustMigration() {
 	if err := globals.DB.AutoMigrate(
 		&models.User{},
+		&models.Todo{},
 	); err != nil {
 		log.Fatalf("migration failed: %v", err)
 	}
