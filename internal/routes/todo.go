@@ -72,7 +72,7 @@ func (*TodoRoute) Delete(c fiber.Ctx) error {
 func (r *TodoRoute) Register(root fiber.Router) {
 	router := root.Group("/todo")
 	router.Get("/:id", r.Get)
-	router.Post("/", r.Save)
+	router.Post("/save", r.Save)
 	router.Post("/list", r.List)
 	router.Delete("/:id", r.Delete)
 }
