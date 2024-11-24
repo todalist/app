@@ -22,6 +22,7 @@ type TodoQuerier struct {
 	Type      *int              `json:"type"`
 	TimeRange *common.TimeRange `json:"timeRange"`
 	Status    *int              `json:"status"`
+	ParentID  *uint             `json:"parentId"`
 	common.Pager
 }
 

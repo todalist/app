@@ -51,6 +51,9 @@ func (*TodoService) List(querier *models.TodoQuerier) ([]*models.Todo, error) {
 	if querier.UserID != nil {
 		querierMap["user_id"] = querier.UserID
 	}
+	if querier.ParentID != nil {
+		querierMap["parent_id"] = querier.ParentID
+	}
 	sql := globals.DB.Model(&models.Todo{}).Where(querierMap)
 	if querier.TimeRange != nil {
 		sql = querier.TimeRange.RangeSql(sql, "deadline")
