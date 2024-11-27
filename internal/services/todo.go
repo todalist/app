@@ -18,14 +18,14 @@ func (*TodoService) Save(todo *models.Todo) (*models.Todo, error) {
 	return todo, nil
 }
 
-func (*TodoService) Delete(querier *models.TodoQuerier) (*uint, error) {
+func (*TodoService) Delete(id *uint, userID *uint) (*uint, error) {
 	if err := globals.DB.
-		Where("id = ?", querier.ID).
-		Where("user_id = ?", querier.UserID).Delete(&models.Todo{}).Error; err != nil {
+		Where("id = ?", id).
+		Where("user_id = ?", userID).Delete(&models.Todo{}).Error; err != nil {
 		globals.LOG.Error("delete error", zap.Error(err))
 		return nil, err
 	}
-	return querier.ID, nil
+	return id, nil
 }
 
 func (t *TodoService) Get(querier *models.TodoQuerier) (*models.Todo, error) {

@@ -57,16 +57,15 @@ func (*TodoRoute) List(c fiber.Ctx) error {
 
 func (*TodoRoute) Delete(c fiber.Ctx) error {
 	tokenUser := globals.MustGetTokenUser(c)
-	querier := new(models.TodoQuerier)
+	querier := new(models.BaseModel)
 	if err := c.Bind().URI(querier); err != nil {
 		globals.LOG.Debug("todo delete bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
 	}
-	if querier.ID == nil {
+	if querier.ID < 1 {
 		return fiber.ErrBadRequest
 	}
-	querier.UserID = &tokenUser.UserID
-	return c.JSON(common.Or(todoService.Delete(querier)))
+	return c.JSON(common.Or(todoService.Delete(&querier.ID, &tokenUser.UserID)))
 }
 
 func (r *TodoRoute) Register(root fiber.Router) {
