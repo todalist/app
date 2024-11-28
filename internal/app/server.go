@@ -18,7 +18,6 @@ import (
 
 var (
 	todoRoute       routes.TodoRoute
-	collectionRoute routes.CollectionRoute
 )
 
 func NewServer(conf *globals.AppConfig) *fiber.App {
@@ -70,6 +69,5 @@ func NewServer(conf *globals.AppConfig) *fiber.App {
 	appSys.RegisterRoutes(root)
 	routes.RegisterUserRoutes(root)
 	todoRoute.Register(root)
-	collectionRoute.Register(root)
 	return app
 }

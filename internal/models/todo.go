@@ -8,7 +8,6 @@ import (
 type Todo struct {
 	BaseModel
 	Title    string     `json:"title" validate:"required"`
-	Content  string     `json:"content"`
 	UserID   uint       `json:"userId"`
 	Status   int        `json:"status"`
 	Type     int        `json:"type"`
