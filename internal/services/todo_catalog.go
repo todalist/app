@@ -8,27 +8,27 @@ import (
 	"go.uber.org/zap"
 )
 
-type TodoService struct{}
+type TodoCatalogService struct{}
 
-func (*TodoService) Save(todo *models.Todo) (*models.Todo, error) {
-	if err := globals.DB.Save(todo).Error; err != nil {
-		globals.LOG.Error("save error", zap.Error(err))
+func (*TodoCatalogService) Save(catalog *models.TodoCatalog) (*models.TodoCatalog, error) {
+	if err := globals.DB.Save(catalog).Error; err != nil {
+		globals.LOG.Error("failed to save TodoCatalog catalog: ", zap.Error(err))
 		return nil, err
 	}
-	return todo, nil
+	return catalog, nil
 }
 
-func (*TodoService) Delete(id *uint, userID *uint) (*uint, error) {
+func (*TodoCatalogService) Delete(id *uint, userID *uint) (*uint, error) {
 	if err := globals.DB.
 		Where("id = ?", id).
-		Where("user_id = ?", userID).Delete(&models.Todo{}).Error; err != nil {
+		Where("user_id = ?", userID).Delete(&models.TodoCatalog{}).Error; err != nil {
 		globals.LOG.Error("delete error", zap.Error(err))
 		return nil, err
 	}
 	return id, nil
 }
 
-func (t *TodoService) Get(querier *models.TodoQuerier) (*models.Todo, error) {
+func (t *TodoCatalogService) Get(querier *models.TodoCatalogQuerier) (*models.TodoCatalog, error) {
 	list, err := t.List(querier)
 	if err != nil {
 		return nil, err
@@ -39,26 +39,20 @@ func (t *TodoService) Get(querier *models.TodoQuerier) (*models.Todo, error) {
 	return list[0], nil
 }
 
-func (*TodoService) List(querier *models.TodoQuerier) ([]*models.Todo, error) {
-	var list []*models.Todo
+func (*TodoCatalogService) List(querier *models.TodoCatalogQuerier) ([]*models.TodoCatalog, error) {
+	var list []*models.TodoCatalog
 	querierMap := map[string]interface{}{}
-	sql := globals.DB.Model(&models.Todo{})
+	sql := globals.DB.Model(&models.TodoCatalog{})
 	if querier.ID != nil {
 		querierMap["id"] = querier.ID
 	}
-	if querier.Status != nil {
-		querierMap["status"] = querier.Status
-	}
 	querierMap["user_id"] = querier.UserID
-	if querier.CatalogID != nil {
-		querierMap["catalog_id"] = querier.CatalogID
+	if querier.ParentID != nil {
+		querierMap["parent_id"] = querier.ParentID
 	} else {
 		sql = sql.Where("parent_id is null")
 	}
 	sql = sql.Where(querierMap)
-	if querier.TimeRange != nil {
-		sql = querier.TimeRange.RangeSql(sql, "deadline")
-	}
 	if err := common.Paginate1(sql, &querier.Pager).Find(&list).Error; err != nil {
 		globals.LOG.Error("list error", zap.Error(err))
 		return nil, err

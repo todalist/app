@@ -11,17 +11,17 @@ type Todo struct {
 	UserID   uint       `json:"userId"`
 	Status   int        `json:"status"`
 	Type     int        `json:"type"`
-	ParentID *uint      `json:"parentId"`
+	CatalogID *uint      `json:"catalogId"`
 	Deadline *time.Time `json:"deadline"`
 }
 
 type TodoQuerier struct {
 	ID        *uint             `json:"id" uri:"id"`
-	UserID    *uint             `json:"userId"`
+	UserID    uint             `json:"userId"`
 	Type      *int              `json:"type"`
 	TimeRange *common.TimeRange `json:"timeRange"`
 	Status    *int              `json:"status"`
-	ParentID  *uint             `json:"parentId"`
+	CatalogID *uint      `json:"catalogId"`
 	common.Pager
 }
 

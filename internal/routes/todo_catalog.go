@@ -9,67 +9,69 @@ import (
 	"go.uber.org/zap"
 )
 
-type TodoRoute struct{}
+
+type TodoCatalogRoute struct {}
+
 
 var (
-	todoService services.TodoService
+	todoCatalogService services.TodoCatalogService
 )
 
-func (*TodoRoute) Get(c fiber.Ctx) error {
+func (*TodoCatalogRoute) Get(c fiber.Ctx) error {
 	tokenUser := globals.MustGetTokenUser(c)
-	querier := new(models.TodoQuerier)
+	querier := new(models.TodoCatalogQuerier)
 	if err := c.Bind().URI(querier); err != nil {
-		globals.LOG.Debug("todo get bind error", zap.String("error", err.Error()))
+		globals.LOG.Debug("TodoCatalog get bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
 	}
 	if querier.ID == nil {
 		return fiber.ErrBadRequest
 	}
 	querier.UserID = tokenUser.UserID
-	return c.JSON(common.Or(todoService.Get(querier)))
+	return c.JSON(common.Or(todoCatalogService.Get(querier)))
 }
 
-func (*TodoRoute) Save(c fiber.Ctx) error {
+func (*TodoCatalogRoute) Save(c fiber.Ctx) error {
 	tokenUser := globals.MustGetTokenUser(c)
-	form := new(models.Todo)
+	form := new(models.TodoCatalog)
 	if err := c.Bind().Body(form); err != nil {
-		globals.LOG.Debug("todo save bind error", zap.String("error", err.Error()))
+		globals.LOG.Debug("TodoCatalog save bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
 	}
 	if form.ID > 0 && form.UserID != tokenUser.UserID {
-		globals.LOG.Error("todo save user id not match")
+		globals.LOG.Error("TodoCatalog save user id not match")
 		return fiber.ErrBadRequest
 	}
 	form.UserID = tokenUser.UserID
-	return c.JSON(common.Or(todoService.Save(form)))
+	return c.JSON(common.Or(todoCatalogService.Save(form)))
 }
 
-func (*TodoRoute) List(c fiber.Ctx) error {
+func (*TodoCatalogRoute) List(c fiber.Ctx) error {
 	tokenUser := globals.MustGetTokenUser(c)
-	querier := new(models.TodoQuerier)
+	querier := new(models.TodoCatalogQuerier)
 	if err := c.Bind().Body(querier); err != nil {
-		globals.LOG.Debug("todo list bind error", zap.String("error", err.Error()))
+		globals.LOG.Debug("TodoCatalog list bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
 	}
 	querier.UserID = tokenUser.UserID
-	return c.JSON(common.Or(todoService.List(querier)))
+	return c.JSON(common.Or(todoCatalogService.List(querier)))
 }
 
-func (*TodoRoute) Delete(c fiber.Ctx) error {
+func (*TodoCatalogRoute) Delete(c fiber.Ctx) error {
 	tokenUser := globals.MustGetTokenUser(c)
 	querier := new(models.BaseModel)
 	if err := c.Bind().URI(querier); err != nil {
-		globals.LOG.Debug("todo delete bind error", zap.String("error", err.Error()))
+		globals.LOG.Debug("TodoCatalog delete bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
 	}
 	if querier.ID < 1 {
 		return fiber.ErrBadRequest
 	}
-	return c.JSON(common.Or(todoService.Delete(&querier.ID, &tokenUser.UserID)))
+	return c.JSON(common.Or(todoCatalogService.Delete(&querier.ID, &tokenUser.UserID)))
 }
 
-func (r *TodoRoute) Register(root fiber.Router) {
-	router := root.Group("/todo")
+func (r *TodoCatalogRoute) Register(root fiber.Router) {
+	router := root.Group("/todoCatalog")
 	router.Get("/:id", r.Get)
 	router.Post("/save", r.Save)
 	router.Post("/list", r.List)
