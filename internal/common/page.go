@@ -11,8 +11,8 @@ const (
 )
 
 type Pager struct {
-	PageNum  int `json:"pageNum" validate:"required,min=1"`
-	PageSize int `json:"pageSize" validate:"required,min=1,max=64"`
+	PageNum  int `json:"pageNum"`
+	PageSize int `json:"pageSize"`
 }
 
 func CalcPageOffset(pager *Pager) (offset int) {
@@ -30,6 +30,12 @@ func PaginateWithDefaultOrder(c fiber.Ctx) func(db *gorm.DB) *gorm.DB {
 }
 
 func paginate(db *gorm.DB, pager *Pager) *gorm.DB {
+	if pager == nil {
+		pager = &Pager{
+			PageNum:  1,
+			PageSize: DEFAULT_PAGE_SIZE,
+		}
+	}
 	if pager.PageNum <= 0 {
 		pager.PageNum = 1
 	}
@@ -39,15 +45,6 @@ func paginate(db *gorm.DB, pager *Pager) *gorm.DB {
 	return db.Offset(CalcPageOffset(pager)).Limit(pager.PageSize)
 }
 
-func Paginate1(sql *gorm.DB, pager *Pager) *gorm.DB {
-	return sql.Offset(CalcPageOffset(pager)).Limit(pager.PageSize)
-}
-
-// gorm paginate support
-func Paginate(c fiber.Ctx) func(db *gorm.DB) *gorm.DB {
-	return func(db *gorm.DB) *gorm.DB {
-		pager := new(Pager)
-		c.Bind().Query(pager)
-		return paginate(db, pager)
-	}
+func Paginate(sql *gorm.DB, pager *Pager) *gorm.DB {
+	return paginate(sql, pager)
 }

@@ -59,7 +59,7 @@ func (*TodoService) List(querier *models.TodoQuerier) ([]*models.Todo, error) {
 	if querier.TimeRange != nil {
 		sql = querier.TimeRange.RangeSql(sql, "deadline")
 	}
-	if err := common.Paginate1(sql, &querier.Pager).Find(&list).Error; err != nil {
+	if err := common.Paginate(sql, &querier.Pager).Find(&list).Error; err != nil {
 		globals.LOG.Error("list error", zap.Error(err))
 		return nil, err
 	}

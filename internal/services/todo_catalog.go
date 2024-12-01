@@ -53,7 +53,7 @@ func (*TodoCatalogService) List(querier *models.TodoCatalogQuerier) ([]*models.T
 		sql = sql.Where("parent_id is null")
 	}
 	sql = sql.Where(querierMap)
-	if err := common.Paginate1(sql, &querier.Pager).Find(&list).Error; err != nil {
+	if err := common.Paginate(sql, &querier.Pager).Find(&list).Error; err != nil {
 		globals.LOG.Error("list error", zap.Error(err))
 		return nil, err
 	}
