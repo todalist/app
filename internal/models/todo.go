@@ -29,8 +29,3 @@ const (
 	T_STATUS_INIT = iota + 1
 	T_STATUS_DONE
 )
-
-const (
-	T_TYPE_TODO = iota + 1
-	T_TYPE_FOLDER
-)
