@@ -6,6 +6,7 @@ type TodoCatalog struct {
 	BaseModel
 	UserID             uint   `json:"userId" gorm:"index"`
 	Title              string `json:"title"`
+	Description         string `json:"description"`
 	ParentID           *uint  `json:"parentId" gorm:"index"`
 	AccentColor        string `json:"accentColor"`
 	ItemsCount         int    `json:"itemsCount"`
