@@ -52,6 +52,9 @@ func (*TodoCatalogService) List(querier *models.TodoCatalogQuerier) ([]*models.T
 	} else {
 		sql = sql.Where("parent_id is null")
 	}
+	if querier.PinToSideBar != nil {
+		querierMap["pin_to_side_bar"] = querier.PinToSideBar
+	}
 	sql = sql.Where(querierMap)
 	if err := common.Paginate(sql, &querier.Pager).Find(&list).Error; err != nil {
 		globals.LOG.Error("list error", zap.Error(err))
