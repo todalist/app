@@ -21,7 +21,7 @@ func (*TodoCatalogRoute) Get(c fiber.Ctx) error {
 	tokenUser := globals.MustGetTokenUser(c)
 	querier := new(models.TodoCatalogQuerier)
 	if err := c.Bind().URI(querier); err != nil {
-		globals.LOG.Debug("TodoCatalog get bind error", zap.String("error", err.Error()))
+		globals.LOG.Error("TodoCatalog get bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
 	}
 	if querier.ID == nil {
@@ -35,7 +35,7 @@ func (*TodoCatalogRoute) Save(c fiber.Ctx) error {
 	tokenUser := globals.MustGetTokenUser(c)
 	form := new(models.TodoCatalog)
 	if err := c.Bind().Body(form); err != nil {
-		globals.LOG.Debug("TodoCatalog save bind error", zap.String("error", err.Error()))
+		globals.LOG.Error("TodoCatalog save bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
 	}
 	if form.ID > 0 && form.UserID != tokenUser.UserID {
@@ -50,7 +50,7 @@ func (*TodoCatalogRoute) List(c fiber.Ctx) error {
 	tokenUser := globals.MustGetTokenUser(c)
 	querier := new(models.TodoCatalogQuerier)
 	if err := c.Bind().Body(querier); err != nil {
-		globals.LOG.Debug("TodoCatalog list bind error", zap.String("error", err.Error()))
+		globals.LOG.Error("TodoCatalog list bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
 	}
 	querier.UserID = tokenUser.UserID
@@ -61,7 +61,7 @@ func (*TodoCatalogRoute) Delete(c fiber.Ctx) error {
 	tokenUser := globals.MustGetTokenUser(c)
 	querier := new(models.BaseModel)
 	if err := c.Bind().URI(querier); err != nil {
-		globals.LOG.Debug("TodoCatalog delete bind error", zap.String("error", err.Error()))
+		globals.LOG.Error("TodoCatalog delete bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
 	}
 	if querier.ID < 1 {

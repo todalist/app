@@ -11,9 +11,20 @@ import (
 type TodoCatalogService struct{}
 
 func (*TodoCatalogService) Save(catalog *models.TodoCatalog) (*models.TodoCatalog, error) {
-	if err := globals.DB.Save(catalog).Error; err != nil {
-		globals.LOG.Error("failed to save TodoCatalog catalog: ", zap.Error(err))
-		return nil, err
+	if catalog.ID > 0 {
+		if err := globals.
+			DB.
+			Model(&models.TodoCatalog{}).
+			Where("id = ?", catalog.ID).
+			Omit("items_count", "items_finished_count").Updates(catalog).Error; err != nil {
+			globals.LOG.Error("failed to update TodoCatalog catalog: ", zap.Error(err))
+			return nil, err
+		}
+	} else {
+		if err := globals.DB.Create(catalog).Error; err != nil {
+			globals.LOG.Error("failed to save TodoCatalog catalog: ", zap.Error(err))
+			return nil, err
+		}
 	}
 	return catalog, nil
 }
