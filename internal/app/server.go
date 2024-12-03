@@ -4,8 +4,6 @@ import (
 	"dailydo.fe1.xyz/internal/common"
 	"dailydo.fe1.xyz/internal/globals"
 	"dailydo.fe1.xyz/internal/middlewares"
-	"dailydo.fe1.xyz/internal/routes"
-	appSys "dailydo.fe1.xyz/internal/sys"
 	"errors"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v3"
@@ -14,11 +12,6 @@ import (
 	"github.com/gofiber/fiber/v3/middleware/recover"
 	"github.com/gofiber/fiber/v3/middleware/requestid"
 	"go.uber.org/zap"
-)
-
-var (
-	todoRoute        routes.TodoRoute
-	todoCatalogRoute routes.TodoCatalogRoute
 )
 
 func NewServer(conf *globals.AppConfig) *fiber.App {
@@ -66,10 +59,10 @@ func NewServer(conf *globals.AppConfig) *fiber.App {
 	}))
 	app.Use(middlewares.AuthenticationMiddleware(conf.Auth))
 	// registry all routes
+	// TODO refactor
 	root := app.Group(conf.Server.PathPrefix)
-	appSys.RegisterRoutes(root)
-	routes.RegisterUserRoutes(root)
-	todoRoute.Register(root)
-	todoCatalogRoute.Register(root)
+
+	// init all instance
+	instanceInitNow(root)
 	return app
 }

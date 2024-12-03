@@ -1,0 +1,22 @@
+packageBase: dailydo.fe1.xyz/internal
+models:
+  - name: user
+    rewrite: true
+    fields:
+      - name: username
+        type: string
+        extraTags: gorm:"unique"
+      - name: email
+        type: string
+        extraTags: gorm:"unique"
+      - name: password
+        type: string
+      - name: avatar
+        type: string
+    queriers:
+      - username
+      - email
+    updateOmits:
+      - password
+      - username
+      - email

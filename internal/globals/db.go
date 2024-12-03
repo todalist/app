@@ -1,20 +1,20 @@
 package globals
 
 import (
+	"context"
 	"fmt"
-	"log"
-	"time"
 	"go.uber.org/zap"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
+	"log"
+	"time"
 )
 
 var (
 	DB *gorm.DB
 )
-
 
 func InitDatabase() {
 	if CONF == nil {
@@ -51,4 +51,30 @@ func InitDatabase() {
 		LOG.Fatal("connection database error.", zap.String("dsn", dsn), zap.Error(err))
 	}
 	DB = db
+}
+
+type ContextDBKey struct{}
+
+func ContextDB(ctx context.Context, tx *gorm.DB) context.Context {
+	v := ctx.Value(ContextDBKey{})
+	if v == nil {
+		if tx == nil {
+			tx = DB
+		}
+		return context.WithValue(ctx, ContextDBKey{}, tx)
+	}
+	return ctx
+}
+
+func GetFromContext(ctx context.Context) *gorm.DB {
+	v := ctx.Value(ContextDBKey{})
+	if v == nil {
+		return DB
+	}
+	db, ok := v.(*gorm.DB)
+	if ok {
+		return db
+	}
+	LOG.Fatal("failed to get database from context", zap.Any("value", v))
+	return nil
 }

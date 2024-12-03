@@ -5,6 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "CodeGen",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}/internal/gen/gen.go",
+            "env": {
+                "TEMPLATE_CONFIG_PATH": "internal/gen/gen.yaml",
+                "GEN_CODE_BASE_PATH": "internal/mods"
+            },
+            "cwd": "${workspaceFolder}"
+        },
+        {
             "name": "dailydo-app",
             "type": "go",
             "request": "launch",
