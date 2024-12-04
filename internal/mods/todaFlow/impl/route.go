@@ -86,3 +86,9 @@ func (r *TodaFlowRouteImpl) Register(root fiber.Router) {
 	router.Post("/list", r.List)
 	router.Delete("/:id", r.Delete)
 }
+
+func NewTodaFlowRoute(todaFlowService todaFlow.ITodaFlowService) todaFlow.ITodaFlowRoute {
+	return &TodaFlowRouteImpl{
+		todaFlowService: todaFlowService,
+	}
+}

@@ -163,6 +163,8 @@ type I{{ .Uname }}Route interface {
 
 	Delete(fiber.Ctx) error
 
+	Register(fiber.Router)
+
 }
 
 `
@@ -256,6 +258,12 @@ func (r *{{ .Uname }}RouteImpl) Register(root fiber.Router) {
 	router.Post("/list", r.List)
 	router.Delete("/:id", r.Delete)
 }
+
+func New{{ .Uname }}Route({{ .Name }}Service {{ .Name }}.I{{ .Uname }}Service) {{ .Name }}.I{{ .Uname }}Route {
+	return &{{ .Uname }}RouteImpl{
+		{{ .Name }}Service: {{ .Name }}Service,
+	}
+}
 `
 
 const SERVICE_TEMPLATE = `
@@ -311,6 +319,12 @@ func (s *{{ .Uname }}Service) List(ctx context.Context, querier *{{ .Name }}.{{ 
 func (s *{{ .Uname }}Service) Delete(ctx context.Context, id uint) (uint, error) {
 	{{ .Name }}Repo := s.repo.Get{{ .Uname }}Repo(ctx)
 	return {{ .Name }}Repo.Delete(id)
+}
+
+func New{{ .Uname }}Service(repo repo.IRepo) *{{ .Uname }}Service {
+	return &{{ .Uname }}Service{
+		repo: repo,
+	}
 }
 
 `

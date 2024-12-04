@@ -29,3 +29,9 @@ func (s *TodaTagService) Delete(ctx context.Context, id uint) (uint, error) {
 	todaTagRepo := s.repo.GetTodaTagRepo(ctx)
 	return todaTagRepo.Delete(id)
 }
+
+func NewTodaTagService(repo repo.IRepo) *TodaTagService {
+	return &TodaTagService{
+		repo: repo,
+	}
+}

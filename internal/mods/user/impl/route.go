@@ -86,3 +86,9 @@ func (r *UserRouteImpl) Register(root fiber.Router) {
 	router.Post("/list", r.List)
 	router.Delete("/:id", r.Delete)
 }
+
+func NewUserRoute(userService user.IUserService) user.IUserRoute {
+	return &UserRouteImpl{
+		userService: userService,
+	}
+}

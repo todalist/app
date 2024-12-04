@@ -86,3 +86,9 @@ func (r *TodaTagRouteImpl) Register(root fiber.Router) {
 	router.Post("/list", r.List)
 	router.Delete("/:id", r.Delete)
 }
+
+func NewTodaTagRoute(todaTagService todaTag.ITodaTagService) todaTag.ITodaTagRoute {
+	return &TodaTagRouteImpl{
+		todaTagService: todaTagService,
+	}
+}

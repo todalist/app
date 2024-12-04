@@ -29,3 +29,9 @@ func (s *TodaService) Delete(ctx context.Context, id uint) (uint, error) {
 	todaRepo := s.repo.GetTodaRepo(ctx)
 	return todaRepo.Delete(id)
 }
+
+func NewTodaService(repo repo.IRepo) *TodaService {
+	return &TodaService{
+		repo: repo,
+	}
+}

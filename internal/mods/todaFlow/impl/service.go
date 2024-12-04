@@ -29,3 +29,9 @@ func (s *TodaFlowService) Delete(ctx context.Context, id uint) (uint, error) {
 	todaFlowRepo := s.repo.GetTodaFlowRepo(ctx)
 	return todaFlowRepo.Delete(id)
 }
+
+func NewTodaFlowService(repo repo.IRepo) *TodaFlowService {
+	return &TodaFlowService{
+		repo: repo,
+	}
+}

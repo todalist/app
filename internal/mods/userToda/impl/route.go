@@ -86,3 +86,9 @@ func (r *UserTodaRouteImpl) Register(root fiber.Router) {
 	router.Post("/list", r.List)
 	router.Delete("/:id", r.Delete)
 }
+
+func NewUserTodaRoute(userTodaService userToda.IUserTodaService) userToda.IUserTodaRoute {
+	return &UserTodaRouteImpl{
+		userTodaService: userTodaService,
+	}
+}

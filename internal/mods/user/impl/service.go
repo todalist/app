@@ -29,3 +29,9 @@ func (s *UserService) Delete(ctx context.Context, id uint) (uint, error) {
 	userRepo := s.repo.GetUserRepo(ctx)
 	return userRepo.Delete(id)
 }
+
+func NewUserService(repo repo.IRepo) *UserService {
+	return &UserService{
+		repo: repo,
+	}
+}
