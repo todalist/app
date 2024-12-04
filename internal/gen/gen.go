@@ -9,6 +9,8 @@ import (
 	"text/template"
 )
 
+
+
 type GenConfig struct {
 	Models      *[]*ModelStruct
 	PackageBase string `yaml:"packageBase"`
@@ -30,6 +32,14 @@ type ModelField struct {
 	ExtraTags string `yaml:"extraTags"`
 }
 
+
+
+// a naive code generator.
+// but enough for now.
+// keep is stupid.
+// is it Go's philosophy 😂
+// 
+// TODO dryrun support
 func main() {
 	templateConfigFilePath := os.Getenv("TEMPLATE_CONFIG_PATH")
 	basePath := os.Getenv("GEN_CODE_BASE_PATH")
@@ -61,7 +71,6 @@ func completeModelStruct(models *[]*ModelStruct, packageBase *string) {
 		model.PackageBase = *packageBase
 		for _, field := range *model.Fields {
 			field.Uname = strings.ToUpper(field.Name[0:1]) + field.Name[1:]
-
 		}
 	}
 }
@@ -82,8 +91,11 @@ func genModule(basePath string, model *ModelStruct) {
 			return
 		}
 		// delete directory ignore all files
+		// TODO ask user to confirm
 		println("previous module will be deleted: " + model.Name)
-		os.RemoveAll(modulePath)
+		if err := os.RemoveAll(modulePath); err != nil {
+			panic(err)
+		}
 	}
 	implModulePath := filepath.Join(modulePath, "impl")
 	err := os.MkdirAll(implModulePath, 0755)
