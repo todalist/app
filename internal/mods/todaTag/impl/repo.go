@@ -18,6 +18,17 @@ func (s *TodaTagRepo) Get(id uint) (*todaTag.TodaTag, error) {
 	return &model, nil
 }
 
+func (s *TodaTagRepo) First(querier *todaTag.TodaTagQuerier) (*todaTag.TodaTag, error) {
+	list, err := s.List(querier)
+	if err != nil {
+		return nil, err
+	}
+	if len(list) == 0 {
+		return nil, gorm.ErrRecordNotFound
+	}
+	return list[0], nil
+}
+
 func (s *TodaTagRepo) Save(form *todaTag.TodaTag) (*todaTag.TodaTag, error) {
 	if form.Id == 0 {
 		if err := s.tx.Create(form).Error; err != nil {

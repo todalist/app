@@ -26,6 +26,15 @@ func (r *UserTodaRouteImpl) Get(c fiber.Ctx) error {
 	return c.JSON(common.Or(r.userTodaService.Get(context.Background(), querier.Id)))
 }
 
+func (r *UserTodaRouteImpl) First(c fiber.Ctx) error {
+	var querier userToda.UserTodaQuerier
+	if err := c.Bind().Body(&querier); err != nil {
+		globals.LOG.Error("userToda first bind error", zap.String("error", err.Error()))
+		return fiber.ErrBadRequest
+	}
+	return c.JSON(common.Or(r.userTodaService.First(context.Background(), &querier)))
+}
+
 func (r *UserTodaRouteImpl) Save(c fiber.Ctx) error {
 	var form userToda.UserToda
 	if err := c.Bind().Body(&form); err != nil {
@@ -85,6 +94,7 @@ func (r *UserTodaRouteImpl) Register(root fiber.Router) {
 	router.Post("/save", r.Save)
 	router.Post("/list", r.List)
 	router.Delete("/:id", r.Delete)
+	router.Post("/first", r.First)
 }
 
 func NewUserTodaRoute(userTodaService userToda.IUserTodaService) userToda.IUserTodaRoute {

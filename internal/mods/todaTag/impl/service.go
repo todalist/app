@@ -15,6 +15,11 @@ func (s *TodaTagService) Get(ctx context.Context, id uint) (*todaTag.TodaTag, er
 	return todaTagRepo.Get(id)
 }
 
+func (s *TodaTagService) First(ctx context.Context, querier *todaTag.TodaTagQuerier) (*todaTag.TodaTag, error) {
+	todaTagRepo := s.repo.GetTodaTagRepo(ctx)
+	return todaTagRepo.First(querier)
+}
+
 func (s *TodaTagService) Save(ctx context.Context, form *todaTag.TodaTag) (*todaTag.TodaTag, error) {
 	todaTagRepo := s.repo.GetTodaTagRepo(ctx)
 	return todaTagRepo.Save(form)

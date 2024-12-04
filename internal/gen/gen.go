@@ -268,6 +268,7 @@ func (r *{{ .Uname }}RouteImpl) Register(root fiber.Router) {
 	router.Post("/save", r.Save)
 	router.Post("/list", r.List)
 	router.Delete("/:id", r.Delete)
+	router.Post("/first", r.First)
 }
 
 func New{{ .Uname }}Route({{ .Name }}Service {{ .Name }}.I{{ .Uname }}Service) {{ .Name }}.I{{ .Uname }}Route {

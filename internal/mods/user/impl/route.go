@@ -26,6 +26,15 @@ func (r *UserRouteImpl) Get(c fiber.Ctx) error {
 	return c.JSON(common.Or(r.userService.Get(context.Background(), querier.Id)))
 }
 
+func (r *UserRouteImpl) First(c fiber.Ctx) error {
+	var querier user.UserQuerier
+	if err := c.Bind().Body(&querier); err != nil {
+		globals.LOG.Error("user first bind error", zap.String("error", err.Error()))
+		return fiber.ErrBadRequest
+	}
+	return c.JSON(common.Or(r.userService.First(context.Background(), &querier)))
+}
+
 func (r *UserRouteImpl) Save(c fiber.Ctx) error {
 	var form user.User
 	if err := c.Bind().Body(&form); err != nil {
@@ -85,6 +94,7 @@ func (r *UserRouteImpl) Register(root fiber.Router) {
 	router.Post("/save", r.Save)
 	router.Post("/list", r.List)
 	router.Delete("/:id", r.Delete)
+	router.Post("/first", r.First)
 }
 
 func NewUserRoute(userService user.IUserService) user.IUserRoute {

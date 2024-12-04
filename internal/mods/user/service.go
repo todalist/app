@@ -9,6 +9,8 @@ type IUserService interface {
 	// basic crud
 	Get(context.Context, uint) (*User, error)
 
+	First(context.Context, *UserQuerier) (*User, error)
+
 	Save(context.Context, *User) (*User, error)
 
 	List(context.Context, *UserQuerier) ([]*User, error)

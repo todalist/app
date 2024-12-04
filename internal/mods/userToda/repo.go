@@ -12,7 +12,6 @@ type IUserTodaRepo interface {
 	List(*UserTodaQuerier) ([]*UserToda, error)
 
 	Delete(uint) (uint, error)
-
+	
 	DeleteByTodaId(uint) error
-
 }

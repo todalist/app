@@ -26,6 +26,15 @@ func (r *TodaFlowRouteImpl) Get(c fiber.Ctx) error {
 	return c.JSON(common.Or(r.todaFlowService.Get(context.Background(), querier.Id)))
 }
 
+func (r *TodaFlowRouteImpl) First(c fiber.Ctx) error {
+	var querier todaFlow.TodaFlowQuerier
+	if err := c.Bind().Body(&querier); err != nil {
+		globals.LOG.Error("todaFlow first bind error", zap.String("error", err.Error()))
+		return fiber.ErrBadRequest
+	}
+	return c.JSON(common.Or(r.todaFlowService.First(context.Background(), &querier)))
+}
+
 func (r *TodaFlowRouteImpl) Save(c fiber.Ctx) error {
 	var form todaFlow.TodaFlow
 	if err := c.Bind().Body(&form); err != nil {
@@ -85,6 +94,7 @@ func (r *TodaFlowRouteImpl) Register(root fiber.Router) {
 	router.Post("/save", r.Save)
 	router.Post("/list", r.List)
 	router.Delete("/:id", r.Delete)
+	router.Post("/first", r.First)
 }
 
 func NewTodaFlowRoute(todaFlowService todaFlow.ITodaFlowService) todaFlow.ITodaFlowRoute {

@@ -9,6 +9,8 @@ type ITodaTagService interface {
 	// basic crud
 	Get(context.Context, uint) (*TodaTag, error)
 
+	First(context.Context, *TodaTagQuerier) (*TodaTag, error)
+
 	Save(context.Context, *TodaTag) (*TodaTag, error)
 
 	List(context.Context, *TodaTagQuerier) ([]*TodaTag, error)

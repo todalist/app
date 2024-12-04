@@ -9,6 +9,8 @@ type IUserRoute interface {
 	// basic crud
 	Get(fiber.Ctx) error
 
+	First(fiber.Ctx) error
+
 	Save(fiber.Ctx) error
 
 	List(fiber.Ctx) error

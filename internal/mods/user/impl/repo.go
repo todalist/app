@@ -18,6 +18,17 @@ func (s *UserRepo) Get(id uint) (*user.User, error) {
 	return &model, nil
 }
 
+func (s *UserRepo) First(querier *user.UserQuerier) (*user.User, error) {
+	list, err := s.List(querier)
+	if err != nil {
+		return nil, err
+	}
+	if len(list) == 0 {
+		return nil, gorm.ErrRecordNotFound
+	}
+	return list[0], nil
+}
+
 func (s *UserRepo) Save(form *user.User) (*user.User, error) {
 	if form.Id == 0 {
 		if err := s.tx.Create(form).Error; err != nil {

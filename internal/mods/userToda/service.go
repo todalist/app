@@ -9,6 +9,8 @@ type IUserTodaService interface {
 	// basic crud
 	Get(context.Context, uint) (*UserToda, error)
 
+	First(context.Context, *UserTodaQuerier) (*UserToda, error)
+
 	Save(context.Context, *UserToda) (*UserToda, error)
 
 	List(context.Context, *UserTodaQuerier) ([]*UserToda, error)

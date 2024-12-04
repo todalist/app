@@ -15,6 +15,11 @@ func (s *TodaFlowService) Get(ctx context.Context, id uint) (*todaFlow.TodaFlow,
 	return todaFlowRepo.Get(id)
 }
 
+func (s *TodaFlowService) First(ctx context.Context, querier *todaFlow.TodaFlowQuerier) (*todaFlow.TodaFlow, error) {
+	todaFlowRepo := s.repo.GetTodaFlowRepo(ctx)
+	return todaFlowRepo.First(querier)
+}
+
 func (s *TodaFlowService) Save(ctx context.Context, form *todaFlow.TodaFlow) (*todaFlow.TodaFlow, error) {
 	todaFlowRepo := s.repo.GetTodaFlowRepo(ctx)
 	return todaFlowRepo.Save(form)

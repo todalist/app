@@ -15,6 +15,11 @@ func (s *UserService) Get(ctx context.Context, id uint) (*user.User, error) {
 	return userRepo.Get(id)
 }
 
+func (s *UserService) First(ctx context.Context, querier *user.UserQuerier) (*user.User, error) {
+	userRepo := s.repo.GetUserRepo(ctx)
+	return userRepo.First(querier)
+}
+
 func (s *UserService) Save(ctx context.Context, form *user.User) (*user.User, error) {
 	userRepo := s.repo.GetUserRepo(ctx)
 	return userRepo.Save(form)

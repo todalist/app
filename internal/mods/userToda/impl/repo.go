@@ -19,14 +19,14 @@ func (s *UserTodaRepo) Get(id uint) (*userToda.UserToda, error) {
 }
 
 func (s *UserTodaRepo) First(querier *userToda.UserTodaQuerier) (*userToda.UserToda, error) {
-	l, err := s.List(querier)
+	list, err := s.List(querier)
 	if err != nil {
 		return nil, err
 	}
-	if len(l) == 0 {
+	if len(list) == 0 {
 		return nil, gorm.ErrRecordNotFound
 	}
-	return l[0], nil
+	return list[0], nil
 }
 
 func (s *UserTodaRepo) Save(form *userToda.UserToda) (*userToda.UserToda, error) {
