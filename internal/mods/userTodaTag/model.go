@@ -12,6 +12,7 @@ type UserTodaTag struct {
 
 type UserTodaTagQuerier struct {
 	common.Pager 
-	UserId uint `json:"userId"` 
-	TodaTagId uint `json:"todaTagId"` 
+	Id *uint `json:"id"` 
+	UserId *uint `json:"userId"` 
+	TodaTagId *uint `json:"todaTagId"` 
 }

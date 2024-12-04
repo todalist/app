@@ -31,8 +31,8 @@ func (s *TodaService) Save(ctx context.Context, form *toda.Toda) (*toda.Toda, er
 	} else {
 		// check user permission
 		_, err := userTodaRepo.First(&userToda.UserTodaQuerier{
-			UserId: tokenUser.UserId,
-			TodaId: form.Id,
+			UserId: &tokenUser.UserId,
+			TodaId: &form.Id,
 		})
 		if err != nil {
 			globals.LOG.Warn("no permission to update toda",
@@ -74,8 +74,8 @@ func (s *TodaService) Delete(ctx context.Context, id uint) (uint, error) {
 	userTodaRepo := s.repo.GetUserTodaRepo(ctx)
 	tokenUser := globals.MustGetTokenUserFromContext(ctx)
 	_, err := userTodaRepo.First(&userToda.UserTodaQuerier{
-		UserId: tokenUser.UserId,
-		TodaId: id,
+		UserId: &tokenUser.UserId,
+		TodaId: &id,
 	})
 	if err != nil {
 		globals.LOG.Warn("no permission to delete toda",

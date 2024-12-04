@@ -13,7 +13,8 @@ type TodaTag struct {
 
 type TodaTagQuerier struct {
 	common.Pager 
-	Name string `json:"name"` 
-	AccentColor string `json:"accentColor"` 
-	UserId uint `json:"userId"` 
+	Id *uint `json:"id"` 
+	Name *string `json:"name"` 
+	AccentColor *string `json:"accentColor"` 
+	UserId *uint `json:"userId"` 
 }

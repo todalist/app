@@ -14,8 +14,9 @@ type User struct {
 
 type UserQuerier struct {
 	common.Pager 
-	Username string `json:"username"` 
-	Email string `json:"email"` 
-	Password string `json:"password"` 
-	Avatar string `json:"avatar"` 
+	Id *uint `json:"id"` 
+	Username *string `json:"username"` 
+	Email *string `json:"email"` 
+	Password *string `json:"password"` 
+	Avatar *string `json:"avatar"` 
 }

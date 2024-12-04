@@ -88,14 +88,13 @@ func (r *TodaFlowRouteImpl) Delete(c fiber.Ctx) error {
 	return c.JSON(common.Ok(result))
 }
 
-// unused route
-func (r *TodaFlowRouteImpl) Register(_ fiber.Router) {
-	// router := root.Group("/todaFlow")
-	// router.Get("/:id", r.Get)
-	// router.Post("/save", r.Save)
-	// router.Post("/list", r.List)
-	// router.Delete("/:id", r.Delete)
-	// router.Post("/first", r.First)
+func (r *TodaFlowRouteImpl) Register(root fiber.Router) {
+	router := root.Group("/todaFlow")
+	router.Get("/:id", r.Get)
+	router.Post("/save", r.Save)
+	router.Post("/list", r.List)
+	router.Delete("/:id", r.Delete)
+	router.Post("/first", r.First)
 }
 
 func NewTodaFlowRoute(todaFlowService todaFlow.ITodaFlowService) todaFlow.ITodaFlowRoute {

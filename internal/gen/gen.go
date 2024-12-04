@@ -114,7 +114,13 @@ func RenderAndSave(model *ModelStruct, tmpl string, path string) {
 
 func Render(model *ModelStruct, tmpl string, name string) string {
 	tmpl = strings.Trim(tmpl, "\n")
-	engine, err := template.New(name).Parse(tmpl)
+	engine := template.New(name)
+	engine.Funcs(template.FuncMap{
+		"isPtrType": func(t string) bool {
+			return strings.HasPrefix(t, "*")
+		},
+	})
+	engine, err := engine.Parse(tmpl)
 
 	if err != nil {
 		panic(err)
@@ -139,8 +145,9 @@ type {{ .Uname }} struct {
 }
 
 type {{ .Uname }}Querier struct {
-	common.Pager {{ range $index, $field := .Fields }}
-	{{ $field.Uname }} {{ $field.Type }} ` + "`json:\"{{ $field.Name }}\"`" + ` {{ end }}
+	common.Pager 
+	Id *uint ` + "`json:\"id\"`" + ` {{ range $index, $field := .Fields }}
+	{{ $field.Uname }} {{ if isPtrType $field.Type }}{{else}}*{{ end }}{{ $field.Type }} ` + "`json:\"{{ $field.Name }}\"`" + ` {{ end }}
 }
 
 `

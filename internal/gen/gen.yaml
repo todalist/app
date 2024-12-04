@@ -1,7 +1,7 @@
 packageBase: dailydo.fe1.xyz/internal
 models:
   - name: user
-    rewrite: false
+    rewrite: true
     fields:
       - name: username
         type: string
@@ -40,7 +40,7 @@ models:
     updateOmits:
       - elapsed
   - name: todaTag
-    rewrite: false
+    rewrite: true
     fields:
       - name: name
         type: string
@@ -50,7 +50,7 @@ models:
         type: uint
         extraTags: gorm:"index"
   - name: todaFlow
-    rewrite: false
+    rewrite: true
     fields:
       - name: todaId
         type: uint
@@ -74,7 +74,7 @@ models:
         type: uint
         extraTags: gorm:"index"
   - name: userTodaTag
-    rewrite: false
+    rewrite: true
     fields:
       - name: userId
         type: uint
