@@ -89,12 +89,12 @@ func (r *UserRouteImpl) Delete(c fiber.Ctx) error {
 }
 
 func (r *UserRouteImpl) Register(root fiber.Router) {
-	router := root.Group("/user")
-	router.Get("/:id", r.Get)
-	router.Post("/save", r.Save)
-	router.Post("/list", r.List)
-	router.Delete("/:id", r.Delete)
-	router.Post("/first", r.First)
+	// router := root.Group("/user")
+	// router.Get("/:id", r.Get)
+	// router.Post("/save", r.Save)
+	// router.Post("/list", r.List)
+	// router.Delete("/:id", r.Delete)
+	// router.Post("/first", r.First)
 }
 
 func NewUserRoute(userService user.IUserService) user.IUserRoute {

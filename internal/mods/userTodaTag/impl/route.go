@@ -89,12 +89,12 @@ func (r *UserTodaTagRouteImpl) Delete(c fiber.Ctx) error {
 }
 
 func (r *UserTodaTagRouteImpl) Register(root fiber.Router) {
-	router := root.Group("/userTodaTag")
-	router.Get("/:id", r.Get)
-	router.Post("/save", r.Save)
-	router.Post("/list", r.List)
-	router.Delete("/:id", r.Delete)
-	router.Post("/first", r.First)
+	// router := root.Group("/userTodaTag")
+	// router.Get("/:id", r.Get)
+	// router.Post("/save", r.Save)
+	// router.Post("/list", r.List)
+	// router.Delete("/:id", r.Delete)
+	// router.Post("/first", r.First)
 }
 
 func NewUserTodaTagRoute(userTodaTagService userTodaTag.IUserTodaTagService) userTodaTag.IUserTodaTagRoute {
