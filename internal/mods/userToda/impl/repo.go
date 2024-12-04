@@ -1,9 +1,9 @@
 package userTodaImpl
 
 import (
-	"gorm.io/gorm"
-	"dailydo.fe1.xyz/internal/mods/userToda"
 	"dailydo.fe1.xyz/internal/common"
+	"dailydo.fe1.xyz/internal/mods/userToda"
+	"gorm.io/gorm"
 )
 
 type UserTodaRepo struct {
@@ -16,6 +16,17 @@ func (s *UserTodaRepo) Get(id uint) (*userToda.UserToda, error) {
 		return nil, err
 	}
 	return &model, nil
+}
+
+func (s *UserTodaRepo) First(querier *userToda.UserTodaQuerier) (*userToda.UserToda, error) {
+	l, err := s.List(querier)
+	if err != nil {
+		return nil, err
+	}
+	if len(l) == 0 {
+		return nil, gorm.ErrRecordNotFound
+	}
+	return l[0], nil
 }
 
 func (s *UserTodaRepo) Save(form *userToda.UserToda) (*userToda.UserToda, error) {
@@ -51,6 +62,13 @@ func (s *UserTodaRepo) Delete(id uint) (uint, error) {
 		return 0, err
 	}
 	return id, nil
+}
+
+func (s *UserTodaRepo) DeleteByTodaId(todaId uint) error {
+	if err := s.tx.Where("toda_id = ?", todaId).Delete(&userToda.UserToda{}).Error; err != nil {
+		return err
+	}
+	return nil
 }
 
 func NewUserTodaRepo(tx *gorm.DB) userToda.IUserTodaRepo {

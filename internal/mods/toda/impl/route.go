@@ -1,13 +1,13 @@
 package todaImpl
 
 import (
-	"dailydo.fe1.xyz/internal/mods/toda"
+	"context"
 	"dailydo.fe1.xyz/internal/common"
 	"dailydo.fe1.xyz/internal/globals"
+	"dailydo.fe1.xyz/internal/mods/toda"
 	"github.com/gofiber/fiber/v3"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
-	"context"
 )
 
 type TodaRouteImpl struct {
@@ -31,10 +31,10 @@ func (r *TodaRouteImpl) Save(c fiber.Ctx) error {
 	if err := c.Bind().Body(&form); err != nil {
 		globals.LOG.Error("toda save bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
-	}	
+	}
 	var result *toda.Toda
 	err := globals.DB.Transaction(func(tx *gorm.DB) error {
-		save, err := r.todaService.Save(globals.ContextDB(context.Background(), tx), &form)
+		save, err := r.todaService.Save(globals.ContextDB(globals.MustGetTokenUserContext(c), tx), &form)
 		if err != nil {
 			return err
 		}
@@ -65,7 +65,10 @@ func (r *TodaRouteImpl) Delete(c fiber.Ctx) error {
 	}
 	var result uint
 	err := globals.DB.Transaction(func(tx *gorm.DB) error {
-		id, err := r.todaService.Delete(globals.ContextDB(context.Background(), tx), querier.Id)
+		id, err := r.todaService.Delete(
+			globals.ContextDB(globals.MustGetTokenUserContext(c), tx),
+			querier.Id,
+		)
 		if err != nil {
 			return err
 		}

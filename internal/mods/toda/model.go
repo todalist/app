@@ -11,7 +11,7 @@ type Toda struct {
 	Description string `json:"description" ` 
 	UserId uint `json:"userId" gorm:"index"` 
 	Priority int `json:"priority" ` 
-	Deadline time.Time `json:"deadline" ` 
+	Deadline *time.Time `json:"deadline" ` 
 	Status int `json:"status" ` 
 	Estimate int `json:"estimate" ` 
 	Elapsed int `json:"elapsed" `
@@ -28,3 +28,15 @@ type TodaQuerier struct {
 	Estimate int `json:"estimate"` 
 	Elapsed int `json:"elapsed"` 
 }
+
+const (
+	TodaStatusTodo = iota + 1
+	TodaStatusFinished
+	TodaStatusArchived
+)
+
+const (
+	TodaPriorityLow = iota + 1
+	TodaPriorityMedium
+	TodaPriorityHigh
+)

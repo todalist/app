@@ -1,9 +1,9 @@
 package todaImpl
 
 import (
-	"gorm.io/gorm"
-	"dailydo.fe1.xyz/internal/mods/toda"
 	"dailydo.fe1.xyz/internal/common"
+	"dailydo.fe1.xyz/internal/mods/toda"
+	"gorm.io/gorm"
 )
 
 type TodaRepo struct {
@@ -29,7 +29,7 @@ func (s *TodaRepo) Save(form *toda.Toda) (*toda.Toda, error) {
 		tx.
 		Model(form).
 		Where("id = ?", form.Id).
-		Where("updated_at <=", form.UpdatedAt).Omit("elapsed", ).
+		Where("updated_at <=", form.UpdatedAt).Omit("elapsed").
 		Updates(form).Error; err != nil {
 		return nil, err
 	}

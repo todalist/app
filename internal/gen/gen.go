@@ -157,6 +157,8 @@ type I{{ .Uname }}Route interface {
 	// basic crud
 	Get(fiber.Ctx) error
 
+	First(fiber.Ctx) error
+
 	Save(fiber.Ctx) error
 
 	List(fiber.Ctx) error
@@ -196,6 +198,15 @@ func (r *{{ .Uname }}RouteImpl) Get(c fiber.Ctx) error {
 		return fiber.ErrBadRequest
 	}
 	return c.JSON(common.Or(r.{{ .Name }}Service.Get(context.Background(), querier.Id)))
+}
+
+func (r *{{ .Uname }}RouteImpl) First(c fiber.Ctx) error {
+	var querier {{ .Name }}.{{ .Uname }}Querier
+	if err := c.Bind().Body(&querier); err != nil {
+		globals.LOG.Error("{{ .Name }} first bind error", zap.String("error", err.Error()))
+		return fiber.ErrBadRequest
+	}
+	return c.JSON(common.Or(r.{{ .Name }}Service.First(context.Background(), &querier)))
 }
 
 func (r *{{ .Uname }}RouteImpl) Save(c fiber.Ctx) error {
@@ -278,6 +289,8 @@ type I{{ .Uname }}Service interface {
 	// basic crud
 	Get(context.Context, uint) (*{{ .Uname }}, error)
 
+	First(context.Context, *{{ .Uname }}Querier) (*{{ .Uname }}, error)
+
 	Save(context.Context, *{{ .Uname }}) (*{{ .Uname }}, error)
 
 	List(context.Context, *{{ .Uname }}Querier) ([]*{{ .Uname }}, error)
@@ -304,6 +317,11 @@ type {{ .Uname }}Service struct {
 func (s *{{ .Uname }}Service) Get(ctx context.Context, id uint) (*{{ .Name }}.{{ .Uname }}, error) {
 	{{ .Name }}Repo := s.repo.Get{{ .Uname }}Repo(ctx)
 	return {{ .Name }}Repo.Get(id)
+}
+
+func (s *{{ .Uname }}Service) First(ctx context.Context, querier *{{ .Name }}.{{ .Uname }}Querier) (*{{ .Name }}.{{ .Uname }}, error) {
+	{{ .Name }}Repo := s.repo.Get{{ .Uname }}Repo(ctx)
+	return {{ .Name }}Repo.First(querier)
 }
 
 func (s *{{ .Uname }}Service) Save(ctx context.Context, form *{{ .Name }}.{{ .Uname }}) (*{{ .Name }}.{{ .Uname }}, error) {
@@ -337,6 +355,8 @@ type I{{ .Uname }}Repo interface {
 	// basic crud
 	Get(uint) (*{{ .Uname }}, error)
 
+	First(*{{ .Uname }}Querier) (*{{ .Uname }}, error)
+
 	Save(*{{ .Uname }}) (*{{ .Uname }}, error)
 
 	List(*{{ .Uname }}Querier) ([]*{{ .Uname }}, error)
@@ -367,6 +387,17 @@ func (s *{{ .Uname }}Repo) Get(id uint) (*{{ .Name }}.{{ .Uname }}, error) {
 		return nil, err
 	}
 	return &model, nil
+}
+
+func (s *{{ .Uname }}Repo) First(querier *{{ .Name }}.{{ .Uname }}Querier) (*{{ .Name }}.{{ .Uname }}, error) {
+	list, err := s.List(querier)
+	if err != nil {
+		return nil, err
+	}
+	if len(list) == 0 {
+		return nil, gorm.ErrRecordNotFound
+	}
+	return list[0], nil
 }
 
 func (s *{{ .Uname }}Repo) Save(form *{{ .Name }}.{{ .Uname }}) (*{{ .Name }}.{{ .Uname }}, error) {

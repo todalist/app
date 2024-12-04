@@ -9,6 +9,6 @@ type ITodaRepo interface {
 
 	List(*TodaQuerier) ([]*Toda, error)
 
-	Delete(uint) (uint, error)
+	Delete(id uint) (uint, error)
 
 }
