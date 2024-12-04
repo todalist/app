@@ -2,30 +2,30 @@ package userImpl
 
 import (
 	"dailydo.fe1.xyz/internal/mods/user"
-	"dailydo.fe1.xyz/internal/store"
+	"dailydo.fe1.xyz/internal/repo"
 	"context"
 )
 
 type UserService struct {
-	store store.IStore
+	repo repo.IRepo
 }
 
 func (s *UserService) Get(ctx context.Context, id uint) (*user.User, error) {
-	userStore := s.store.GetUserStore(ctx)
-	return userStore.Get(id)
+	userRepo := s.repo.GetUserRepo(ctx)
+	return userRepo.Get(id)
 }
 
 func (s *UserService) Save(ctx context.Context, form *user.User) (*user.User, error) {
-	userStore := s.store.GetUserStore(ctx)
-	return userStore.Save(form)
+	userRepo := s.repo.GetUserRepo(ctx)
+	return userRepo.Save(form)
 }
 
 func (s *UserService) List(ctx context.Context, querier *user.UserQuerier) ([]*user.User, error) {
-	userStore := s.store.GetUserStore(ctx)
-	return userStore.List(querier)
+	userRepo := s.repo.GetUserRepo(ctx)
+	return userRepo.List(querier)
 }
 
 func (s *UserService) Delete(ctx context.Context, id uint) (uint, error) {
-	userStore := s.store.GetUserStore(ctx)
-	return userStore.Delete(id)
+	userRepo := s.repo.GetUserRepo(ctx)
+	return userRepo.Delete(id)
 }

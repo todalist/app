@@ -1,6 +1,6 @@
 package user
 
-type IUserStore interface {
+type IUserRepo interface {
 
 	// basic crud
 	Get(uint) (*User, error)

@@ -1,7 +1,7 @@
 packageBase: dailydo.fe1.xyz/internal
 models:
   - name: user
-    rewrite: false
+    rewrite: true
     fields:
       - name: username
         type: string
@@ -18,14 +18,68 @@ models:
       - username
       - email
   - name: toda
+    rewrite: true
     fields:
       - name: title
         type: string
       - name: description
         type: string
+      - name: userId
+        type: uint
+        extraTags: gorm:"index"
       - name: priority
         type: int
       - name: deadline
         type: time.Time
       - name: status
         type: int
+      - name: estimate
+        type: int
+      - name: elapsed
+        type: int
+    updateOmits:
+      - elapsed
+  - name: todaTag
+    rewrite: true
+    fields:
+      - name: name
+        type: string
+      - name: accentColor
+        type: string
+      - name: userId
+        type: uint
+        extraTags: gorm:"index"
+  - name: todaFlow
+    rewrite: true
+    fields:
+      - name: todaId
+        type: uint
+        extraTags: gorm:"index"
+      - name: userId
+        type: uint
+        extraTags: gorm:"index"
+      - name: prev
+        type: int
+      - name: next
+        type: int
+      - name: description
+        type: string
+  - name: userToda
+    rewrite: true
+    fields:
+      - name: userId
+        type: uint
+        extraTags: gorm:"index"
+      - name: todaId
+        type: uint
+        extraTags: gorm:"index"
+  - name: userTodaTag
+    rewrite: true
+    fields:
+      - name: userId
+        type: uint
+        extraTags: gorm:"index"
+      - name: todaTagId
+        type: uint
+        extraTags: gorm:"index"
+

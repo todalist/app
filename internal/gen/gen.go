@@ -195,6 +195,7 @@ func (r *{{ .Uname }}RouteImpl) Get(c fiber.Ctx) error {
 	}
 	return c.JSON(common.Or(r.{{ .Name }}Service.Get(context.Background(), querier.Id)))
 }
+
 func (r *{{ .Uname }}RouteImpl) Save(c fiber.Ctx) error {
 	var form {{ .Name }}.{{ .Uname }}
 	if err := c.Bind().Body(&form); err != nil {
@@ -216,6 +217,7 @@ func (r *{{ .Uname }}RouteImpl) Save(c fiber.Ctx) error {
 	}
 	return c.JSON(common.Ok(result))
 }
+
 func (r *{{ .Uname }}RouteImpl) List(c fiber.Ctx) error {
 	var querier {{ .Name }}.{{ .Uname }}Querier
 	if err := c.Bind().Body(&querier); err != nil {
@@ -224,6 +226,7 @@ func (r *{{ .Uname }}RouteImpl) List(c fiber.Ctx) error {
 	}
 	return c.JSON(common.Or(r.{{ .Name }}Service.List(context.Background(), &querier)))
 }
+
 func (r *{{ .Uname }}RouteImpl) Delete(c fiber.Ctx) error {
 	var querier common.BaseModel
 	if err := c.Bind().URI(&querier); err != nil {
@@ -244,6 +247,14 @@ func (r *{{ .Uname }}RouteImpl) Delete(c fiber.Ctx) error {
 		return fiber.ErrInternalServerError
 	}
 	return c.JSON(common.Ok(result))
+}
+
+func (r *{{ .Uname }}RouteImpl) Register(root fiber.Router) {
+	router := root.Group("/{{ .Name }}")
+	router.Get("/:id", r.Get)
+	router.Post("/save", r.Save)
+	router.Post("/list", r.List)
+	router.Delete("/:id", r.Delete)
 }
 `
 
@@ -355,8 +366,7 @@ func (s *{{ .Uname }}Repo) Save(form *{{ .Name }}.{{ .Uname }}) (*{{ .Name }}.{{
 		tx.
 		Model(form).
 		Where("id = ?", form.Id).
-		Where("updated_at <=", form.UpdatedAt).
-		{{ if .UpdateOmits }}Omit({{ range  $index, $omit := .UpdateOmits }}"{{ $omit }}", {{ end }}){{ end }}.
+		Where("updated_at <=", form.UpdatedAt).{{ if gt (len .UpdateOmits) 0 }}Omit({{ range  $index, $omit := .UpdateOmits }}"{{ $omit }}", {{ end }}).{{ end }}
 		Updates(form).Error; err != nil {
 		return nil, err
 	}

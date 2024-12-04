@@ -1,7 +1,7 @@
-package userImpl
+package userTodaImpl
 
 import (
-	"dailydo.fe1.xyz/internal/mods/user"
+	"dailydo.fe1.xyz/internal/mods/userToda"
 	"dailydo.fe1.xyz/internal/common"
 	"dailydo.fe1.xyz/internal/globals"
 	"github.com/gofiber/fiber/v3"
@@ -10,31 +10,31 @@ import (
 	"context"
 )
 
-type UserRouteImpl struct {
-	userService user.IUserService
+type UserTodaRouteImpl struct {
+	userTodaService userToda.IUserTodaService
 }
 
-func (r *UserRouteImpl) Get(c fiber.Ctx) error {
+func (r *UserTodaRouteImpl) Get(c fiber.Ctx) error {
 	var querier common.BaseModel
 	if err := c.Bind().URI(&querier); err != nil {
-		globals.LOG.Error("user get bind error", zap.String("error", err.Error()))
+		globals.LOG.Error("userToda get bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
 	}
 	if querier.Id < 1 {
 		return fiber.ErrBadRequest
 	}
-	return c.JSON(common.Or(r.userService.Get(context.Background(), querier.Id)))
+	return c.JSON(common.Or(r.userTodaService.Get(context.Background(), querier.Id)))
 }
 
-func (r *UserRouteImpl) Save(c fiber.Ctx) error {
-	var form user.User
+func (r *UserTodaRouteImpl) Save(c fiber.Ctx) error {
+	var form userToda.UserToda
 	if err := c.Bind().Body(&form); err != nil {
-		globals.LOG.Error("user save bind error", zap.String("error", err.Error()))
+		globals.LOG.Error("userToda save bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
 	}	
-	var result *user.User
+	var result *userToda.UserToda
 	err := globals.DB.Transaction(func(tx *gorm.DB) error {
-		save, err := r.userService.Save(globals.ContextDB(context.Background(), tx), &form)
+		save, err := r.userTodaService.Save(globals.ContextDB(context.Background(), tx), &form)
 		if err != nil {
 			return err
 		}
@@ -48,24 +48,24 @@ func (r *UserRouteImpl) Save(c fiber.Ctx) error {
 	return c.JSON(common.Ok(result))
 }
 
-func (r *UserRouteImpl) List(c fiber.Ctx) error {
-	var querier user.UserQuerier
+func (r *UserTodaRouteImpl) List(c fiber.Ctx) error {
+	var querier userToda.UserTodaQuerier
 	if err := c.Bind().Body(&querier); err != nil {
-		globals.LOG.Error("user list bind error", zap.String("error", err.Error()))
+		globals.LOG.Error("userToda list bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
 	}
-	return c.JSON(common.Or(r.userService.List(context.Background(), &querier)))
+	return c.JSON(common.Or(r.userTodaService.List(context.Background(), &querier)))
 }
 
-func (r *UserRouteImpl) Delete(c fiber.Ctx) error {
+func (r *UserTodaRouteImpl) Delete(c fiber.Ctx) error {
 	var querier common.BaseModel
 	if err := c.Bind().URI(&querier); err != nil {
-		globals.LOG.Error("user delete bind error", zap.String("error", err.Error()))
+		globals.LOG.Error("userToda delete bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
 	}
 	var result uint
 	err := globals.DB.Transaction(func(tx *gorm.DB) error {
-		id, err := r.userService.Delete(globals.ContextDB(context.Background(), tx), querier.Id)
+		id, err := r.userTodaService.Delete(globals.ContextDB(context.Background(), tx), querier.Id)
 		if err != nil {
 			return err
 		}
@@ -79,8 +79,8 @@ func (r *UserRouteImpl) Delete(c fiber.Ctx) error {
 	return c.JSON(common.Ok(result))
 }
 
-func (r *UserRouteImpl) Register(root fiber.Router) {
-	router := root.Group("/user")
+func (r *UserTodaRouteImpl) Register(root fiber.Router) {
+	router := root.Group("/userToda")
 	router.Get("/:id", r.Get)
 	router.Post("/save", r.Save)
 	router.Post("/list", r.List)
