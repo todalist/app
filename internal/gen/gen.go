@@ -18,7 +18,6 @@ type ModelStruct struct {
 	Uname       string `yaml:"-"`
 	Name        string
 	Fields      *[]*ModelField
-	Queriers    []string
 	UpdateOmits []string `yaml:"updateOmits"`
 	Rewrite     bool
 	PackageBase string `yaml:"-"`
@@ -76,7 +75,8 @@ func genAllModules(basePath string, models *[]*ModelStruct) {
 func genModule(basePath string, model *ModelStruct) {
 	// check directory is exists
 	modulePath := filepath.Join(basePath, model.Name)
-	if _, err := os.Stat(modulePath); os.IsExist(err) {
+
+	if f, err := os.Stat(modulePath); err == nil && f.IsDir() {
 		if !model.Rewrite {
 			println("skip gen module: " + model.Name)
 			return
@@ -99,9 +99,9 @@ func genModule(basePath string, model *ModelStruct) {
 	// service file
 	RenderAndSave(model, SERVICE_TEMPLATE, filepath.Join(modulePath, "service.go"))
 	RenderAndSave(model, SERVICE_IMPL_TEMPLATE, filepath.Join(implModulePath, "service.go"))
-	// store file
-	RenderAndSave(model, STORE_TEMPLATE, filepath.Join(modulePath, "store.go"))
-	RenderAndSave(model, STORE_IMPL_TEMPLATE, filepath.Join(implModulePath, "store.go"))
+	// Repo file
+	RenderAndSave(model, REPO_TEMPLATE, filepath.Join(modulePath, "repo.go"))
+	RenderAndSave(model, REPO_IMPL_TEMPLATE, filepath.Join(implModulePath, "repo.go"))
 }
 
 func RenderAndSave(model *ModelStruct, tmpl string, path string) {
@@ -274,40 +274,40 @@ package {{ .Name }}Impl
 
 import (
 	"{{ .PackageBase }}/mods/{{ .Name }}"
-	"{{ .PackageBase }}/store"
+	"{{ .PackageBase }}/repo"
 	"context"
 )
 
 type {{ .Uname }}Service struct {
-	store store.IStore
+	repo repo.IRepo
 }
 
 func (s *{{ .Uname }}Service) Get(ctx context.Context, id uint) (*{{ .Name }}.{{ .Uname }}, error) {
-	{{ .Name }}Store := s.store.Get{{ .Uname }}Store(ctx)
-	return {{ .Name }}Store.Get(id)
+	{{ .Name }}Repo := s.repo.Get{{ .Uname }}Repo(ctx)
+	return {{ .Name }}Repo.Get(id)
 }
 
 func (s *{{ .Uname }}Service) Save(ctx context.Context, form *{{ .Name }}.{{ .Uname }}) (*{{ .Name }}.{{ .Uname }}, error) {
-	{{ .Name }}Store := s.store.Get{{ .Uname }}Store(ctx)
-	return {{ .Name }}Store.Save(form)
+	{{ .Name }}Repo := s.repo.Get{{ .Uname }}Repo(ctx)
+	return {{ .Name }}Repo.Save(form)
 }
 
 func (s *{{ .Uname }}Service) List(ctx context.Context, querier *{{ .Name }}.{{ .Uname }}Querier) ([]*{{ .Name }}.{{ .Uname }}, error) {
-	{{ .Name }}Store := s.store.Get{{ .Uname }}Store(ctx)
-	return {{ .Name }}Store.List(querier)
+	{{ .Name }}Repo := s.repo.Get{{ .Uname }}Repo(ctx)
+	return {{ .Name }}Repo.List(querier)
 }
 
 func (s *{{ .Uname }}Service) Delete(ctx context.Context, id uint) (uint, error) {
-	{{ .Name }}Store := s.store.Get{{ .Uname }}Store(ctx)
-	return {{ .Name }}Store.Delete(id)
+	{{ .Name }}Repo := s.repo.Get{{ .Uname }}Repo(ctx)
+	return {{ .Name }}Repo.Delete(id)
 }
 
 `
 
-const STORE_TEMPLATE = `
+const REPO_TEMPLATE = `
 package {{ .Name }}
 
-type I{{ .Uname }}Store interface {
+type I{{ .Uname }}Repo interface {
 
 	// basic crud
 	Get(uint) (*{{ .Uname }}, error)
@@ -323,19 +323,20 @@ type I{{ .Uname }}Store interface {
 `
 
 // TODO list implement
-const STORE_IMPL_TEMPLATE = `
+const REPO_IMPL_TEMPLATE = `
 package {{ .Name }}Impl
 
 import (
 	"gorm.io/gorm"
 	"{{ .PackageBase }}/mods/{{ .Name }}"
+	"{{ .PackageBase }}/common"
 )
 
-type {{ .Uname }}Store struct {
+type {{ .Uname }}Repo struct {
 	tx *gorm.DB
 }
 
-func (s *{{ .Uname }}Store) Get(id uint) (*{{ .Name }}.{{ .Uname }}, error) {
+func (s *{{ .Uname }}Repo) Get(id uint) (*{{ .Name }}.{{ .Uname }}, error) {
 	var model {{ .Name }}.{{ .Uname }}
 	if err := s.tx.Where("id = ?", id).First(&model).Error; err != nil {
 		return nil, err
@@ -343,26 +344,46 @@ func (s *{{ .Uname }}Store) Get(id uint) (*{{ .Name }}.{{ .Uname }}, error) {
 	return &model, nil
 }
 
-func (s *{{ .Uname }}Store) Save(form *{{ .Name }}.{{ .Uname }}) (*{{ .Name }}.{{ .Uname }}, error) {
-	if err := s.tx.Save(form).Error; err != nil {
+func (s *{{ .Uname }}Repo) Save(form *{{ .Name }}.{{ .Uname }}) (*{{ .Name }}.{{ .Uname }}, error) {
+	if form.Id == 0 {
+		if err := s.tx.Create(form).Error; err != nil {
+			return nil, err
+		}
+		return form, nil
+	}
+	if err := s.
+		tx.
+		Model(form).
+		Where("id = ?", form.Id).
+		Where("updated_at <=", form.UpdatedAt).
+		{{ if .UpdateOmits }}Omit({{ range  $index, $omit := .UpdateOmits }}"{{ $omit }}", {{ end }}){{ end }}.
+		Updates(form).Error; err != nil {
 		return nil, err
 	}
 	return form, nil
 }
 
-func (s *{{ .Uname }}Store) List(querier *{{ .Name }}.{{ .Uname }}Querier) ([]*{{ .Name }}.{{ .Uname }}, error) {
+func (s *{{ .Uname }}Repo) List(querier *{{ .Name }}.{{ .Uname }}Querier) ([]*{{ .Name }}.{{ .Uname }}, error) {
 	var list []*{{ .Name }}.{{ .Uname }}
-	if err := s.tx.Where(querier).Find(&list).Error; err != nil {
+	sql := s.tx.Where(querier)
+	sql = common.Paginate(sql, &querier.Pager)
+	if err := sql.Find(&list).Error; err != nil {
 		return nil, err
 	}
 	return list, nil
 }
 
-func (s *{{ .Uname }}Store) Delete(id uint) (uint, error) {
+func (s *{{ .Uname }}Repo) Delete(id uint) (uint, error) {
 	if err := s.tx.Where("id = ?", id).Delete(&{{ .Name }}.{{ .Uname }}{}).Error; err != nil {
 		return 0, err
 	}
 	return id, nil
+}
+
+func New{{ .Uname }}Repo(tx *gorm.DB) {{ .Name }}.I{{ .Uname }}Repo {
+	return &{{ .Uname }}Repo{
+		tx: tx,
+	}
 }
 
 `

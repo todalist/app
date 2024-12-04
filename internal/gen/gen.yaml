@@ -1,7 +1,7 @@
 packageBase: dailydo.fe1.xyz/internal
 models:
   - name: user
-    rewrite: true
+    rewrite: false
     fields:
       - name: username
         type: string
@@ -13,10 +13,19 @@ models:
         type: string
       - name: avatar
         type: string
-    queriers:
-      - username
-      - email
     updateOmits:
       - password
       - username
       - email
+  - name: toda
+    fields:
+      - name: title
+        type: string
+      - name: description
+        type: string
+      - name: priority
+        type: int
+      - name: deadline
+        type: time.Time
+      - name: status
+        type: int
