@@ -1,9 +1,10 @@
 package todaFlowImpl
 
 import (
-	"dailydo.fe1.xyz/internal/mods/todaFlow"
-	"dailydo.fe1.xyz/internal/repo"
 	"context"
+
+	"github.com/todalist/app/internal/mods/todaFlow"
+	"github.com/todalist/app/internal/repo"
 )
 
 type TodaFlowService struct {

@@ -2,10 +2,11 @@ package todaImpl
 
 import (
 	"context"
-	"dailydo.fe1.xyz/internal/common"
-	"dailydo.fe1.xyz/internal/globals"
-	"dailydo.fe1.xyz/internal/mods/toda"
+
 	"github.com/gofiber/fiber/v3"
+	"github.com/todalist/app/internal/common"
+	"github.com/todalist/app/internal/globals"
+	"github.com/todalist/app/internal/mods/toda"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )

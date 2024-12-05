@@ -258,11 +258,7 @@ type {{ .Uname }}Repo struct {
 }
 
 func (s *{{ .Uname }}Repo) Get(id uint) (*{{ .Name }}.{{ .Uname }}, error) {
-	var model {{ .Name }}.{{ .Uname }}
-	if err := s.tx.Where("id = ?", id).First(&model).Error; err != nil {
-		return nil, err
-	}
-	return &model, nil
+	return s.First(&{{ .Name }}.{{ .Uname }}Querier{Id: &id})
 }
 
 func (s *{{ .Uname }}Repo) First(querier *{{ .Name }}.{{ .Uname }}Querier) (*{{ .Name }}.{{ .Uname }}, error) {

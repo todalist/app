@@ -87,7 +87,7 @@ func genModule(basePath string, model *ModelStruct) {
 			println("skip gen module: " + model.Name)
 			return
 		}
-		// delete directory ignore all files
+		// delete directory and remove all files
 		// TODO ask user to confirm
 		println("previous module will be deleted: " + model.Name)
 		if err := os.RemoveAll(modulePath); err != nil {

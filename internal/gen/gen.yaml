@@ -1,4 +1,4 @@
-packageBase: dailydo.fe1.xyz/internal
+packageBase: github.com/todalist/app/internal
 models:
   - name: user
     rewrite: false
@@ -82,4 +82,3 @@ models:
       - name: todaTagId
         type: uint
         extraTags: gorm:"index"
-

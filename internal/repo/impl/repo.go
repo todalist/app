@@ -3,19 +3,19 @@ package repoImpl
 import (
 	"context"
 
-	"dailydo.fe1.xyz/internal/globals"
-	"dailydo.fe1.xyz/internal/mods/toda"
-	todaImpl "dailydo.fe1.xyz/internal/mods/toda/impl"
-	"dailydo.fe1.xyz/internal/mods/todaFlow"
-	todaFlowImpl "dailydo.fe1.xyz/internal/mods/todaFlow/impl"
-	"dailydo.fe1.xyz/internal/mods/todaTag"
-	todaTagImpl "dailydo.fe1.xyz/internal/mods/todaTag/impl"
-	"dailydo.fe1.xyz/internal/mods/user"
-	userImpl "dailydo.fe1.xyz/internal/mods/user/impl"
-	"dailydo.fe1.xyz/internal/mods/userToda"
-	userTodaImpl "dailydo.fe1.xyz/internal/mods/userToda/impl"
-	"dailydo.fe1.xyz/internal/mods/userTodaTag"
-	userTodaTagImpl "dailydo.fe1.xyz/internal/mods/userTodaTag/impl"
+	"github.com/todalist/app/internal/globals"
+	"github.com/todalist/app/internal/mods/toda"
+	todaImpl "github.com/todalist/app/internal/mods/toda/impl"
+	"github.com/todalist/app/internal/mods/todaFlow"
+	todaFlowImpl "github.com/todalist/app/internal/mods/todaFlow/impl"
+	"github.com/todalist/app/internal/mods/todaTag"
+	todaTagImpl "github.com/todalist/app/internal/mods/todaTag/impl"
+	"github.com/todalist/app/internal/mods/user"
+	userImpl "github.com/todalist/app/internal/mods/user/impl"
+	"github.com/todalist/app/internal/mods/userToda"
+	userTodaImpl "github.com/todalist/app/internal/mods/userToda/impl"
+	"github.com/todalist/app/internal/mods/userTodaTag"
+	userTodaTagImpl "github.com/todalist/app/internal/mods/userTodaTag/impl"
 )
 
 type repoImpl struct {

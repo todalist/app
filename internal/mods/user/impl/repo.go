@@ -1,9 +1,9 @@
 package userImpl
 
 import (
+	"github.com/todalist/app/internal/common"
+	"github.com/todalist/app/internal/mods/user"
 	"gorm.io/gorm"
-	"dailydo.fe1.xyz/internal/mods/user"
-	"dailydo.fe1.xyz/internal/common"
 )
 
 type UserRepo struct {
@@ -40,7 +40,7 @@ func (s *UserRepo) Save(form *user.User) (*user.User, error) {
 		tx.
 		Model(form).
 		Where("id = ?", form.Id).
-		Where("updated_at <=", form.UpdatedAt).Omit("password", "username", "email", ).
+		Where("updated_at <=", form.UpdatedAt).Omit("password", "username", "email").
 		Updates(form).Error; err != nil {
 		return nil, err
 	}

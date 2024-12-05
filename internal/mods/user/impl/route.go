@@ -1,13 +1,14 @@
 package userImpl
 
 import (
-	"dailydo.fe1.xyz/internal/mods/user"
-	"dailydo.fe1.xyz/internal/common"
-	"dailydo.fe1.xyz/internal/globals"
+	"context"
+
 	"github.com/gofiber/fiber/v3"
+	"github.com/todalist/app/internal/common"
+	"github.com/todalist/app/internal/globals"
+	"github.com/todalist/app/internal/mods/user"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
-	"context"
 )
 
 type UserRouteImpl struct {
@@ -40,7 +41,7 @@ func (r *UserRouteImpl) Save(c fiber.Ctx) error {
 	if err := c.Bind().Body(&form); err != nil {
 		globals.LOG.Error("user save bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
-	}	
+	}
 	var result *user.User
 	err := globals.DB.Transaction(func(tx *gorm.DB) error {
 		save, err := r.userService.Save(globals.ContextDB(context.Background(), tx), &form)

@@ -3,11 +3,11 @@ package todaImpl
 import (
 	"context"
 
-	"dailydo.fe1.xyz/internal/globals"
-	"dailydo.fe1.xyz/internal/mods/toda"
-	"dailydo.fe1.xyz/internal/mods/userToda"
-	"dailydo.fe1.xyz/internal/repo"
 	"github.com/gofiber/fiber/v3"
+	"github.com/todalist/app/internal/globals"
+	"github.com/todalist/app/internal/mods/toda"
+	"github.com/todalist/app/internal/mods/userToda"
+	"github.com/todalist/app/internal/repo"
 	"go.uber.org/zap"
 )
 

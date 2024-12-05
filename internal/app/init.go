@@ -1,15 +1,15 @@
 package app
 
 import (
-	"dailydo.fe1.xyz/internal"
-	todaImpl "dailydo.fe1.xyz/internal/mods/toda/impl"
-	todaFlowImpl "dailydo.fe1.xyz/internal/mods/todaFlow/impl"
-	todaTagImpl "dailydo.fe1.xyz/internal/mods/todaTag/impl"
-	userImpl "dailydo.fe1.xyz/internal/mods/user/impl"
-	userTodaImpl "dailydo.fe1.xyz/internal/mods/userToda/impl"
-	userTodaTagImpl "dailydo.fe1.xyz/internal/mods/userTodaTag/impl"
-	repoImpl "dailydo.fe1.xyz/internal/repo/impl"
 	"github.com/gofiber/fiber/v3"
+	"github.com/todalist/app/internal"
+	todaImpl "github.com/todalist/app/internal/mods/toda/impl"
+	todaFlowImpl "github.com/todalist/app/internal/mods/todaFlow/impl"
+	todaTagImpl "github.com/todalist/app/internal/mods/todaTag/impl"
+	userImpl "github.com/todalist/app/internal/mods/user/impl"
+	userTodaImpl "github.com/todalist/app/internal/mods/userToda/impl"
+	userTodaTagImpl "github.com/todalist/app/internal/mods/userTodaTag/impl"
+	repoImpl "github.com/todalist/app/internal/repo/impl"
 )
 
 // TODO : init routes

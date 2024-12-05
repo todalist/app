@@ -1,9 +1,10 @@
 package userImpl
 
 import (
-	"dailydo.fe1.xyz/internal/mods/user"
-	"dailydo.fe1.xyz/internal/repo"
 	"context"
+
+	"github.com/todalist/app/internal/mods/user"
+	"github.com/todalist/app/internal/repo"
 )
 
 type UserService struct {

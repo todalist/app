@@ -1,9 +1,10 @@
 package todaTagImpl
 
 import (
-	"dailydo.fe1.xyz/internal/mods/todaTag"
-	"dailydo.fe1.xyz/internal/repo"
 	"context"
+
+	"github.com/todalist/app/internal/mods/todaTag"
+	"github.com/todalist/app/internal/repo"
 )
 
 type TodaTagService struct {

@@ -1,9 +1,9 @@
 package todaTagImpl
 
 import (
+	"github.com/todalist/app/internal/common"
+	"github.com/todalist/app/internal/mods/todaTag"
 	"gorm.io/gorm"
-	"dailydo.fe1.xyz/internal/mods/todaTag"
-	"dailydo.fe1.xyz/internal/common"
 )
 
 type TodaTagRepo struct {

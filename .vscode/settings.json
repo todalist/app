@@ -1,7 +1,9 @@
 {
     "cSpell.words": [
+        "gorm",
         "redislock",
-        "toda"
+        "toda",
+        "todalist"
     ],
     "go.addTags": {
         "tags": "json",

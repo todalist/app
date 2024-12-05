@@ -1,13 +1,14 @@
 package userTodaTagImpl
 
 import (
-	"dailydo.fe1.xyz/internal/mods/userTodaTag"
-	"dailydo.fe1.xyz/internal/common"
-	"dailydo.fe1.xyz/internal/globals"
+	"context"
+
 	"github.com/gofiber/fiber/v3"
+	"github.com/todalist/app/internal/common"
+	"github.com/todalist/app/internal/globals"
+	"github.com/todalist/app/internal/mods/userTodaTag"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
-	"context"
 )
 
 type UserTodaTagRouteImpl struct {
@@ -40,7 +41,7 @@ func (r *UserTodaTagRouteImpl) Save(c fiber.Ctx) error {
 	if err := c.Bind().Body(&form); err != nil {
 		globals.LOG.Error("userTodaTag save bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
-	}	
+	}
 	var result *userTodaTag.UserTodaTag
 	err := globals.DB.Transaction(func(tx *gorm.DB) error {
 		save, err := r.userTodaTagService.Save(globals.ContextDB(context.Background(), tx), &form)

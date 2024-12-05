@@ -1,9 +1,9 @@
 package userTodaTagImpl
 
 import (
+	"github.com/todalist/app/internal/common"
+	"github.com/todalist/app/internal/mods/userTodaTag"
 	"gorm.io/gorm"
-	"dailydo.fe1.xyz/internal/mods/userTodaTag"
-	"dailydo.fe1.xyz/internal/common"
 )
 
 type UserTodaTagRepo struct {

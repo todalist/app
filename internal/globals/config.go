@@ -3,8 +3,9 @@ package globals
 import (
 	"log"
 	"os"
-	"dailydo.fe1.xyz/internal/common"
+
 	"github.com/goccy/go-yaml"
+	"github.com/todalist/app/internal/common"
 	"go.uber.org/zap"
 )
 
@@ -56,7 +57,6 @@ type CorsConfig struct {
 	Enable  bool
 	Origins []string
 }
-
 
 func MustLoad() *AppConfig {
 	file_path := os.Getenv(common.APP_CONFIG_ENV_KEY)

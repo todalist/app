@@ -1,16 +1,17 @@
 package app
 
 import (
-	"dailydo.fe1.xyz/internal/common"
-	"dailydo.fe1.xyz/internal/globals"
-	"dailydo.fe1.xyz/internal/middlewares"
 	"errors"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/cors"
 	fiberLoggerM "github.com/gofiber/fiber/v3/middleware/logger"
 	"github.com/gofiber/fiber/v3/middleware/recover"
 	"github.com/gofiber/fiber/v3/middleware/requestid"
+	"github.com/todalist/app/internal/common"
+	"github.com/todalist/app/internal/globals"
+	"github.com/todalist/app/internal/middlewares"
 	"go.uber.org/zap"
 )
 

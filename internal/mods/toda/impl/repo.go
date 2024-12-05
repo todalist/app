@@ -1,8 +1,8 @@
 package todaImpl
 
 import (
-	"dailydo.fe1.xyz/internal/common"
-	"dailydo.fe1.xyz/internal/mods/toda"
+	"github.com/todalist/app/internal/common"
+	"github.com/todalist/app/internal/mods/toda"
 	"gorm.io/gorm"
 )
 
@@ -11,11 +11,18 @@ type TodaRepo struct {
 }
 
 func (s *TodaRepo) Get(id uint) (*toda.Toda, error) {
-	var model toda.Toda
-	if err := s.tx.Where("id = ?", id).First(&model).Error; err != nil {
+	return s.First(&toda.TodaQuerier{Id: &id})
+}
+
+func (s *TodaRepo) First(querier *toda.TodaQuerier) (*toda.Toda, error) {
+	list, err := s.List(querier)
+	if err != nil {
 		return nil, err
 	}
-	return &model, nil
+	if len(list) < 1 {
+		return nil, nil
+	}
+	return list[0], nil
 }
 
 func (s *TodaRepo) Save(form *toda.Toda) (*toda.Toda, error) {

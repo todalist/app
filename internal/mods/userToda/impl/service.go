@@ -1,9 +1,10 @@
 package userTodaImpl
 
 import (
-	"dailydo.fe1.xyz/internal/mods/userToda"
-	"dailydo.fe1.xyz/internal/repo"
 	"context"
+
+	"github.com/todalist/app/internal/mods/userToda"
+	"github.com/todalist/app/internal/repo"
 )
 
 type UserTodaService struct {

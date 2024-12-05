@@ -1,7 +1,7 @@
 package userToda
 
 import (
-	"dailydo.fe1.xyz/internal/common"
+	"github.com/todalist/app/internal/common"
 )
 
 type UserToda struct {

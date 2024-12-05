@@ -3,12 +3,12 @@ package repo
 import (
 	"context"
 
-	"dailydo.fe1.xyz/internal/mods/toda"
-	"dailydo.fe1.xyz/internal/mods/todaFlow"
-	"dailydo.fe1.xyz/internal/mods/todaTag"
-	"dailydo.fe1.xyz/internal/mods/user"
-	"dailydo.fe1.xyz/internal/mods/userToda"
-	"dailydo.fe1.xyz/internal/mods/userTodaTag"
+	"github.com/todalist/app/internal/mods/toda"
+	"github.com/todalist/app/internal/mods/todaFlow"
+	"github.com/todalist/app/internal/mods/todaTag"
+	"github.com/todalist/app/internal/mods/user"
+	"github.com/todalist/app/internal/mods/userToda"
+	"github.com/todalist/app/internal/mods/userTodaTag"
 )
 
 type IRepo interface {

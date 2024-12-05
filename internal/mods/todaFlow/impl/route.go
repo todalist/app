@@ -1,13 +1,14 @@
 package todaFlowImpl
 
 import (
-	"dailydo.fe1.xyz/internal/mods/todaFlow"
-	"dailydo.fe1.xyz/internal/common"
-	"dailydo.fe1.xyz/internal/globals"
+	"context"
+
 	"github.com/gofiber/fiber/v3"
+	"github.com/todalist/app/internal/common"
+	"github.com/todalist/app/internal/globals"
+	"github.com/todalist/app/internal/mods/todaFlow"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
-	"context"
 )
 
 type TodaFlowRouteImpl struct {
@@ -40,7 +41,7 @@ func (r *TodaFlowRouteImpl) Save(c fiber.Ctx) error {
 	if err := c.Bind().Body(&form); err != nil {
 		globals.LOG.Error("todaFlow save bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
-	}	
+	}
 	var result *todaFlow.TodaFlow
 	err := globals.DB.Transaction(func(tx *gorm.DB) error {
 		save, err := r.todaFlowService.Save(globals.ContextDB(context.Background(), tx), &form)

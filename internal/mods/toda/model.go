@@ -1,8 +1,9 @@
 package toda
 
 import (
-	"dailydo.fe1.xyz/internal/common"
 	"time"
+
+	"github.com/todalist/app/internal/common"
 )
 
 type Toda struct {

@@ -1,8 +1,8 @@
 package userTodaImpl
 
 import (
-	"dailydo.fe1.xyz/internal/common"
-	"dailydo.fe1.xyz/internal/mods/userToda"
+	"github.com/todalist/app/internal/common"
+	"github.com/todalist/app/internal/mods/userToda"
 	"gorm.io/gorm"
 )
 

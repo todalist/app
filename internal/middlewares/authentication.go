@@ -3,7 +3,8 @@ package middlewares
 import (
 	"strings"
 	"time"
-	"dailydo.fe1.xyz/internal/globals"
+
+	"github.com/todalist/app/internal/globals"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/golang-jwt/jwt/v5"

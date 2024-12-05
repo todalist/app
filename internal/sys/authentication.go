@@ -1,10 +1,10 @@
 package sys
 
 // import (
-// 	"dailydo.fe1.xyz/internal/common"
-// 	"dailydo.fe1.xyz/internal/globals"
-// 	"dailydo.fe1.xyz/internal/models"
-// 	"dailydo.fe1.xyz/internal/services"
+// 	"github.com/todalist/app/internal/common"
+// 	"github.com/todalist/app/internal/globals"
+// 	"github.com/todalist/app/internal/models"
+// 	"github.com/todalist/app/internal/services"
 // 	"github.com/gofiber/fiber/v3"
 // 	"github.com/golang-jwt/jwt/v5"
 // 	"go.uber.org/zap"

@@ -3,13 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/todalist/app/internal/app"
+	"github.com/todalist/app/internal/globals"
+	"github.com/todalist/app/internal/migration"
+	"go.uber.org/zap"
 	"os"
 	"os/signal"
-	"dailydo.fe1.xyz/internal/app"
-	"dailydo.fe1.xyz/internal/globals"
-	"dailydo.fe1.xyz/internal/migration"
-
-	"go.uber.org/zap"
 )
 
 func main() {
@@ -24,7 +23,7 @@ func main() {
 	// migration database
 	migration.MustMigration()
 	// init redis
-	globals.InitRedis()
+	// globals.InitRedis()
 	// register router
 	srv := app.NewServer(globals.CONF)
 	// startup

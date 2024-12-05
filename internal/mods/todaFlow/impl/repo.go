@@ -1,9 +1,9 @@
 package todaFlowImpl
 
 import (
+	"github.com/todalist/app/internal/common"
+	"github.com/todalist/app/internal/mods/todaFlow"
 	"gorm.io/gorm"
-	"dailydo.fe1.xyz/internal/mods/todaFlow"
-	"dailydo.fe1.xyz/internal/common"
 )
 
 type TodaFlowRepo struct {
