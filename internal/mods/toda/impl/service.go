@@ -66,6 +66,8 @@ func (s *TodaService) Save(ctx context.Context, form *toda.Toda) (*toda.Toda, er
 
 func (s *TodaService) List(ctx context.Context, querier *toda.TodaQuerier) ([]*toda.Toda, error) {
 	todaRepo := s.repo.GetTodaRepo(ctx)
+	tokenUser := globals.MustGetTokenUserFromContext(ctx)
+	querier.UserId = &tokenUser.UserId
 	return todaRepo.List(querier)
 }
 

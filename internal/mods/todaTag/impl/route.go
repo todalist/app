@@ -44,7 +44,7 @@ func (r *TodaTagRouteImpl) Save(c fiber.Ctx) error {
 	}
 	var result *todaTag.TodaTag
 	err := globals.DB.Transaction(func(tx *gorm.DB) error {
-		save, err := r.todaTagService.Save(globals.ContextDB(context.Background(), tx), &form)
+		save, err := r.todaTagService.Save(globals.ContextDB(globals.MustGetTokenUserContext(c), tx), &form)
 		if err != nil {
 			return err
 		}
@@ -75,7 +75,7 @@ func (r *TodaTagRouteImpl) Delete(c fiber.Ctx) error {
 	}
 	var result uint
 	err := globals.DB.Transaction(func(tx *gorm.DB) error {
-		id, err := r.todaTagService.Delete(globals.ContextDB(context.Background(), tx), querier.Id)
+		id, err := r.todaTagService.Delete(globals.ContextDB(globals.MustGetTokenUserContext(c), tx), querier.Id)
 		if err != nil {
 			return err
 		}

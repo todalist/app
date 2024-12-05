@@ -1,6 +1,8 @@
 package todaTagImpl
 
 import (
+	"fmt"
+
 	"github.com/todalist/app/internal/common"
 	"github.com/todalist/app/internal/mods/todaTag"
 	"gorm.io/gorm"
@@ -11,11 +13,9 @@ type TodaTagRepo struct {
 }
 
 func (s *TodaTagRepo) Get(id uint) (*todaTag.TodaTag, error) {
-	var model todaTag.TodaTag
-	if err := s.tx.Where("id = ?", id).First(&model).Error; err != nil {
-		return nil, err
-	}
-	return &model, nil
+	return s.First(&todaTag.TodaTagQuerier{
+		Id: &id,
+	})
 }
 
 func (s *TodaTagRepo) First(querier *todaTag.TodaTagQuerier) (*todaTag.TodaTag, error) {
@@ -49,7 +49,25 @@ func (s *TodaTagRepo) Save(form *todaTag.TodaTag) (*todaTag.TodaTag, error) {
 
 func (s *TodaTagRepo) List(querier *todaTag.TodaTagQuerier) ([]*todaTag.TodaTag, error) {
 	var list []*todaTag.TodaTag
-	sql := s.tx.Where(querier)
+	cond, args := common.QuerierToSqlCondition(nil, querier, "tt")
+	if cond == "" {
+		cond = "1 = 1"
+	}
+	sqlStr := fmt.Sprintf(`
+SELECT
+	tt.*
+FROM
+	t_user_toda_tag as utt
+INNER JOIN
+	t_toda_tag as tt ON tt.id = utt.toda_tag_id
+WHERE
+	utt.user_id = @userId
+	AND %s
+	AND tt.deleted_at IS NOT NULL
+	AND utt.deleted_at IS NOT NULL
+	`, cond)
+	(*args)["userId"] = querier.UserId
+	sql := s.tx.Raw(sqlStr, args)
 	sql = common.Paginate(sql, &querier.Pager)
 	if err := sql.Find(&list).Error; err != nil {
 		return nil, err

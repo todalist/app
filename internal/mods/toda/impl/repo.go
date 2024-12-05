@@ -66,6 +66,7 @@ WHERE
 	AND t.deleted_at IS NULL
 	AND ut.deleted_at IS NULL
 `, cond)
+	(*args)["userId"] = querier.UserId
 	sql := s.tx.Raw(sqlStr, args)
 	sql = common.Paginate(sql, &querier.Pager)
 	if err := sql.Find(&list).Error; err != nil {
