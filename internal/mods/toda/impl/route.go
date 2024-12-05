@@ -2,7 +2,6 @@ package todaImpl
 
 import (
 	"context"
-
 	"github.com/gofiber/fiber/v3"
 	"github.com/todalist/app/internal/common"
 	"github.com/todalist/app/internal/globals"

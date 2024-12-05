@@ -6,8 +6,11 @@
 # ARG BUILD_ID
 # RUN --mount=type=cache,id=$BUILD_ID-gopath,target=$GOPATH go build -o /app .
 
+
+# TODO refactor required
+
 FROM debian:12-slim
 RUN apt update && apt install -y ca-certificates && rm -rf /var/lib/apt/lists/*
-COPY dailydo /app
+COPY app /app
 CMD ["/app"]
 
