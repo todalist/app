@@ -2,7 +2,6 @@ package todaImpl
 
 import (
 	"context"
-
 	"github.com/gofiber/fiber/v3"
 	"github.com/todalist/app/internal/globals"
 	"github.com/todalist/app/internal/mods/toda"
@@ -98,3 +97,23 @@ func NewTodaService(repo repo.IRepo) *TodaService {
 		repo: repo,
 	}
 }
+
+// func (s *TodaService) fillTodaVO(ctx context.Context, list []*toda.TodaVO) ([]*toda.TodaVO, error) {
+// 	todaTagRefRepo := s.repo.GetTodaTagRefRepo(ctx)
+// 	todaMap := common.ToFieldMap(list, func(t *toda.TodaVO) uint {
+// 		return t.Id
+// 	})
+// 	todaIds := lo.Keys(todaMap)
+// 	todaTagVOs, err := todaTagRefRepo.ListTodaTagByTodaIds(todaIds)
+// 	if err != nil {
+// 		globals.LOG.Error("todaToVO error", zap.Error(err))
+// 		return nil, err
+// 	}
+// 	for _, vo := range todaTagVOs {
+// 		t, ok := todaMap[vo.TodaId]
+// 		if ok {
+// 			t.Tags = append(t.Tags, vo)
+// 		}
+// 	}
+// 	return list, nil
+// }

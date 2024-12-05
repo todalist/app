@@ -60,6 +60,11 @@ func (s *TodaTagRefRepo) Delete(id uint) (uint, error) {
 	return id, nil
 }
 
+func (s *TodaTagRefRepo) ListTodaTagByTodaIds(ids []uint) ([]*todaTagRef.TodaTagVO, error) {
+	var list []*todaTagRef.TodaTagVO
+	return list, nil
+}
+
 func NewTodaTagRefRepo(tx *gorm.DB) todaTagRef.ITodaTagRefRepo {
 	return &TodaTagRefRepo{
 		tx: tx,

@@ -89,6 +89,15 @@ func (r *UserTodaRouteImpl) Delete(c fiber.Ctx) error {
 	return c.JSON(common.Ok(result))
 }
 
+func (r *UserTodaRouteImpl) ListUserToda(c fiber.Ctx) error {
+	var querier userToda.ListUserTodaQuerier
+	if err := c.Bind().Body(&querier); err != nil {
+		globals.LOG.Error("userToda list bind error", zap.String("error", err.Error()))
+		return fiber.ErrBadRequest
+	}
+	return c.JSON(common.Or(r.userTodaService.ListUserToda(globals.MustGetTokenUserContext(c), &querier)))
+}
+
 func (r *UserTodaRouteImpl) Register(root fiber.Router) {
 	// router := root.Group("/userToda")
 	// router.Get("/:id", r.Get)

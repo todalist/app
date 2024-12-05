@@ -17,4 +17,6 @@ type IUserTodaService interface {
 
 	Delete(context.Context, uint) (uint, error)
 
+	ListUserToda(context.Context, *ListUserTodaQuerier) ([]*UserTodaVO, error)
+
 }

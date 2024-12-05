@@ -17,6 +17,8 @@ type IUserTodaRoute interface {
 
 	Delete(fiber.Ctx) error
 
+	ListUserToda(fiber.Ctx) error
+
 	Register(fiber.Router)
 
 }

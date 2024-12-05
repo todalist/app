@@ -3,6 +3,7 @@ package userTodaImpl
 import (
 	"context"
 
+	"github.com/todalist/app/internal/globals"
 	"github.com/todalist/app/internal/mods/userToda"
 	"github.com/todalist/app/internal/repo"
 )
@@ -34,6 +35,13 @@ func (s *UserTodaService) List(ctx context.Context, querier *userToda.UserTodaQu
 func (s *UserTodaService) Delete(ctx context.Context, id uint) (uint, error) {
 	userTodaRepo := s.repo.GetUserTodaRepo(ctx)
 	return userTodaRepo.Delete(id)
+}
+
+func (s *UserTodaService) ListUserToda(ctx context.Context, querier *userToda.ListUserTodaQuerier) ([]*userToda.UserTodaVO, error) {
+	userTodaRepo := s.repo.GetUserTodaRepo(ctx)
+	tokenUser := globals.MustGetTokenUserFromContext(ctx)
+	querier.UserId = &tokenUser.UserId
+	return userTodaRepo.ListUserToda(querier)
 }
 
 func NewUserTodaService(repo repo.IRepo) *UserTodaService {

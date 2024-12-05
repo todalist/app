@@ -13,4 +13,6 @@ type ITodaTagRefRepo interface {
 
 	Delete(uint) (uint, error)
 
+	ListTodaTagByTodaIds([]uint) ([]*TodaTagVO, error)
+
 }
