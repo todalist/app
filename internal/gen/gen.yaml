@@ -82,3 +82,12 @@ models:
       - name: todaTagId
         type: uint
         extraTags: gorm:"index"
+  - name: todaTagRef
+    rewrite: false
+    fields:
+      - name: todaId
+        type: uint
+        extraTags: gorm:"index"
+      - name: todaTagId
+        type: uint
+        extraTags: gorm:"index"

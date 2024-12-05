@@ -10,6 +10,8 @@ import (
 	todaFlowImpl "github.com/todalist/app/internal/mods/todaFlow/impl"
 	"github.com/todalist/app/internal/mods/todaTag"
 	todaTagImpl "github.com/todalist/app/internal/mods/todaTag/impl"
+	"github.com/todalist/app/internal/mods/todaTagRef"
+	todaTagRefImpl "github.com/todalist/app/internal/mods/todaTagRef/impl"
 	"github.com/todalist/app/internal/mods/user"
 	userImpl "github.com/todalist/app/internal/mods/user/impl"
 	"github.com/todalist/app/internal/mods/userToda"
@@ -49,6 +51,11 @@ func (*repoImpl) GetUserTodaRepo(ctx context.Context) userToda.IUserTodaRepo {
 func (*repoImpl) GetUserTodaTagRepo(ctx context.Context) userTodaTag.IUserTodaTagRepo {
 	tx := globals.GetFromContext(ctx)
 	return userTodaTagImpl.NewUserTodaTagRepo(tx)
+}
+
+func (*repoImpl) GetTodaTagRefRepo(ctx context.Context) todaTagRef.ITodaTagRefRepo {
+	tx := globals.GetFromContext(ctx)
+	return todaTagRefImpl.NewTodaTagRefRepo(tx)
 }
 
 var RepoImpl = &repoImpl{}
