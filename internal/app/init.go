@@ -11,7 +11,6 @@ import (
 	repoImpl "github.com/todalist/app/internal/repo/impl"
 )
 
-// TODO : init routes
 func instanceInitNow(app fiber.Router) {
 	repo := repoImpl.RepoImpl
 	// services
