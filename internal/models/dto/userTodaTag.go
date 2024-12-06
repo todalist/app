@@ -10,3 +10,8 @@ type UserTodaTagQuerier struct {
 	UserId    *uint `json:"userId"`
 	TodaTagId *uint `json:"todaTagId"`
 }
+
+type ListUserTodaTagQuerier struct {
+	TodaTagQuerier
+	UserId *uint `json:"userId"`
+}

@@ -20,4 +20,6 @@ type ITodaTagService interface {
 
 	Delete(context.Context, uint) (uint, error)
 
+	// ListUserTodaTag(context.Context, *dto.TodaTagQuerier) ([]*entity.TodaTag, error)
+
 }

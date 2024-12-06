@@ -1,8 +1,6 @@
 package todaTagImpl
 
 import (
-	"fmt"
-
 	"github.com/todalist/app/internal/common"
 	"github.com/todalist/app/internal/models/dto"
 	"github.com/todalist/app/internal/models/entity"
@@ -51,25 +49,7 @@ func (s *TodaTagRepo) Save(form *entity.TodaTag) (*entity.TodaTag, error) {
 
 func (s *TodaTagRepo) List(querier *dto.TodaTagQuerier) ([]*entity.TodaTag, error) {
 	var list []*entity.TodaTag
-	cond, args := common.QuerierToSqlCondition(nil, querier, "tt")
-	if cond == "" {
-		cond = "1 = 1"
-	}
-	sqlStr := fmt.Sprintf(`
-SELECT
-	tt.*
-FROM
-	t_user_toda_tag as utt
-INNER JOIN
-	t_toda_tag as tt ON tt.id = utt.toda_tag_id
-WHERE
-	utt.user_id = @userId
-	AND %s
-	AND tt.deleted_at IS NULL
-	AND utt.deleted_at IS NULL
-	`, cond)
-	(*args)["userId"] = querier.UserId
-	sql := s.tx.Raw(sqlStr, args)
+	sql := s.tx.Model(&entity.TodaTag{}).Where(querier)
 	sql = common.Paginate(sql, &querier.Pager)
 	if err := sql.Find(&list).Error; err != nil {
 		return nil, err

@@ -9,5 +9,5 @@ type TodaTagQuerier struct {
 	Id          *uint   `json:"id"`
 	Name        *string `json:"name"`
 	AccentColor *string `json:"accentColor"`
-	UserId      *uint   `json:"userId"`
+	OwnerUserId *uint   `json:"userId"`
 }

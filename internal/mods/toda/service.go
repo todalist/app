@@ -14,9 +14,7 @@ type ITodaService interface {
 
 	Save(context.Context, *entity.Toda) (*entity.Toda, error)
 
-	List(context.Context, *dto.TodaQuerier) ([]*entity.Toda, error)
-
-	ListUserToda(context.Context, *dto.ListUserTodaQuerier) ([]*vo.UserTodaVO, error)
+	List(context.Context, *dto.ListUserTodaQuerier) ([]*vo.UserTodaVO, error)
 
 	Delete(context.Context, uint) (uint, error)
 }

@@ -94,10 +94,10 @@ func (r *TodaFlowRouteImpl) Delete(c fiber.Ctx) error {
 func (r *TodaFlowRouteImpl) Register(root fiber.Router) {
 	router := root.Group("/todaFlow")
 	router.Get("/:id", r.Get)
-	router.Post("/save", r.Save)
-	router.Post("/list", r.List)
-	router.Delete("/:id", r.Delete)
-	router.Post("/first", r.First)
+	// router.Post("/save", r.Save)
+	// router.Post("/list", r.List)
+	// router.Delete("/:id", r.Delete)
+	// router.Post("/first", r.First)
 }
 
 func NewTodaFlowRoute(todaFlowService todaFlow.ITodaFlowService) todaFlow.ITodaFlowRoute {

@@ -2,7 +2,6 @@ package todaImpl
 
 import (
 	"context"
-
 	"github.com/gofiber/fiber/v3"
 	"github.com/samber/lo"
 	"github.com/todalist/app/internal/common"
@@ -29,7 +28,7 @@ func (s *TodaService) Save(ctx context.Context, form *entity.Toda) (*entity.Toda
 	tokenUser := globals.MustGetTokenUserFromContext(ctx)
 	isCreate := form.Id < 1
 	if isCreate {
-		form.UserId = tokenUser.UserId
+		form.OwnerUserId = tokenUser.UserId
 		form.Status = entity.TodaStatusTodo
 	} else {
 		// check user permission
@@ -57,7 +56,7 @@ func (s *TodaService) Save(ctx context.Context, form *entity.Toda) (*entity.Toda
 	if isCreate {
 		// init toda with user
 		_, err := userTodaRepo.Save(&entity.UserToda{
-			UserId: form.UserId,
+			UserId: form.OwnerUserId,
 			TodaId: form.Id,
 		})
 		if err != nil {
@@ -65,13 +64,6 @@ func (s *TodaService) Save(ctx context.Context, form *entity.Toda) (*entity.Toda
 		}
 	}
 	return form, nil
-}
-
-func (s *TodaService) List(ctx context.Context, querier *dto.TodaQuerier) ([]*entity.Toda, error) {
-	todaRepo := s.repo.GetTodaRepo(ctx)
-	tokenUser := globals.MustGetTokenUserFromContext(ctx)
-	querier.UserId = &tokenUser.UserId
-	return todaRepo.List(querier)
 }
 
 func (s *TodaService) Delete(ctx context.Context, id uint) (uint, error) {
@@ -97,7 +89,7 @@ func (s *TodaService) Delete(ctx context.Context, id uint) (uint, error) {
 }
 
 
-func (s *TodaService) ListUserToda(ctx context.Context, querier *dto.ListUserTodaQuerier) ([]*vo.UserTodaVO, error) {
+func (s *TodaService) List(ctx context.Context, querier *dto.ListUserTodaQuerier) ([]*vo.UserTodaVO, error) {
 	userTodaRepo := s.repo.GetUserTodaRepo(ctx)
 	tokenUser := globals.MustGetTokenUserFromContext(ctx)
 	querier.UserId = &tokenUser.UserId
@@ -115,7 +107,7 @@ func (s *TodaService) fillTodaVO(ctx context.Context, list *[]*vo.UserTodaVO) er
 
 	todaTagRefRepo := s.repo.GetTodaTagRefRepo(ctx)
 	todaMap := common.ToFieldMap(list, func(t *vo.UserTodaVO) uint {
-		return t.TodaVO.Id
+		return t.Toda.Id
 	})
 	todaIds := lo.Keys(todaMap)
 	todaTagVOs, err := todaTagRefRepo.ListTodaTagByTodaIds(todaIds)
@@ -126,7 +118,7 @@ func (s *TodaService) fillTodaVO(ctx context.Context, list *[]*vo.UserTodaVO) er
 	for _, vo := range todaTagVOs {
 		t, ok := todaMap[vo.TodaId]
 		if ok {
-			t.TodaVO.Tags = append(t.TodaVO.Tags, vo)
+			t.Toda.Tags = append(t.Toda.Tags, vo)
 		}
 	}
 	return nil

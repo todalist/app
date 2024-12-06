@@ -2,7 +2,6 @@ package todaTagImpl
 
 import (
 	"context"
-
 	"github.com/gofiber/fiber/v3"
 	"github.com/todalist/app/internal/globals"
 	"github.com/todalist/app/internal/models/dto"
@@ -31,7 +30,7 @@ func (s *TodaTagService) Save(ctx context.Context, form *entity.TodaTag) (*entit
 	tokenUser := globals.MustGetTokenUserFromContext(ctx)
 	isCreate := form.Id < 1
 	if isCreate {
-		form.UserId = tokenUser.UserId
+		form.OwnerUserId = tokenUser.UserId
 	} else {
 		// check user permission
 		_, err := userTodaTagRepo.First(&dto.UserTodaTagQuerier{
@@ -54,7 +53,7 @@ func (s *TodaTagService) Save(ctx context.Context, form *entity.TodaTag) (*entit
 	if isCreate {
 		// init todaTag with user
 		_, err := userTodaTagRepo.Save(&entity.UserTodaTag{
-			UserId:    form.UserId,
+			UserId:    form.OwnerUserId,
 			TodaTagId: form.Id,
 		})
 		if err != nil {
@@ -67,7 +66,7 @@ func (s *TodaTagService) Save(ctx context.Context, form *entity.TodaTag) (*entit
 func (s *TodaTagService) List(ctx context.Context, querier *dto.TodaTagQuerier) ([]*entity.TodaTag, error) {
 	todaTagRepo := s.repo.GetTodaTagRepo(ctx)
 	tokenUser := globals.MustGetTokenUserFromContext(ctx)
-	querier.UserId = &tokenUser.UserId
+	querier.OwnerUserId = &tokenUser.UserId
 	return todaTagRepo.List(querier)
 }
 

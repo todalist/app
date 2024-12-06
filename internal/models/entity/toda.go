@@ -1,15 +1,15 @@
 package entity
 
 import (
-	"time"
 	"github.com/todalist/app/internal/common"
+	"time"
 )
 
 type Toda struct {
 	common.BaseModel
 	Title       string     `json:"title" `
 	Description string     `json:"description" `
-	UserId      uint       `json:"userId" gorm:"index"`
+	OwnerUserId uint       `json:"userId" gorm:"index"`
 	Priority    int        `json:"priority" `
 	Deadline    *time.Time `json:"deadline" `
 	Status      int        `json:"status" `

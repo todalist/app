@@ -8,5 +8,6 @@ type TodaTag struct {
 	common.BaseModel
 	Name        string `json:"name" `
 	AccentColor string `json:"accentColor" `
-	UserId      uint   `json:"userId" gorm:"index"`
+	OwnerUserId uint   `json:"userId" gorm:"index"`
+	PinTop      bool   `json:"pinTop" `
 }
