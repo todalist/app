@@ -61,7 +61,7 @@ func (r *TodaTagRouteImpl) Save(c fiber.Ctx) error {
 }
 
 func (r *TodaTagRouteImpl) List(c fiber.Ctx) error {
-	var querier dto.TodaTagQuerier
+	var querier dto.ListUserTodaTagQuerier
 	if err := c.Bind().Body(&querier); err != nil {
 		globals.LOG.Error("todaTag list bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest

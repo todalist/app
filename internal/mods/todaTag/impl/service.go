@@ -2,10 +2,12 @@ package todaTagImpl
 
 import (
 	"context"
+
 	"github.com/gofiber/fiber/v3"
 	"github.com/todalist/app/internal/globals"
 	"github.com/todalist/app/internal/models/dto"
 	"github.com/todalist/app/internal/models/entity"
+	"github.com/todalist/app/internal/models/vo"
 	"github.com/todalist/app/internal/repo"
 	"go.uber.org/zap"
 )
@@ -63,11 +65,11 @@ func (s *TodaTagService) Save(ctx context.Context, form *entity.TodaTag) (*entit
 	return form, nil
 }
 
-func (s *TodaTagService) List(ctx context.Context, querier *dto.TodaTagQuerier) ([]*entity.TodaTag, error) {
-	todaTagRepo := s.repo.GetTodaTagRepo(ctx)
+func (s *TodaTagService) List(ctx context.Context, querier *dto.ListUserTodaTagQuerier) ([]*vo.UserTodaTagVO, error) {
+	userTodaTagRepo := s.repo.GetUserTodaTagRepo(ctx)
 	tokenUser := globals.MustGetTokenUserFromContext(ctx)
-	querier.OwnerUserId = &tokenUser.UserId
-	return todaTagRepo.List(querier)
+	querier.UserId = &tokenUser.UserId
+	return userTodaTagRepo.ListUserTodaTag(querier)
 }
 
 func (s *TodaTagService) Delete(ctx context.Context, id uint) (uint, error) {
