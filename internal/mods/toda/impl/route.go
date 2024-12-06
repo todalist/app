@@ -51,12 +51,12 @@ func (r *TodaRouteImpl) Save(c fiber.Ctx) error {
 }
 
 func (r *TodaRouteImpl) List(c fiber.Ctx) error {
-	var querier dto.TodaQuerier
+	var querier dto.ListUserTodaQuerier
 	if err := c.Bind().Body(&querier); err != nil {
-		globals.LOG.Error("toda list bind error", zap.String("error", err.Error()))
+		globals.LOG.Error("entity list bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
 	}
-	return c.JSON(common.Or(r.todaService.List(context.Background(), &querier)))
+	return c.JSON(common.Or(r.todaService.ListUserToda(globals.MustGetTokenUserContext(c), &querier)))
 }
 
 func (r *TodaRouteImpl) Delete(c fiber.Ctx) error {
@@ -84,12 +84,22 @@ func (r *TodaRouteImpl) Delete(c fiber.Ctx) error {
 	return c.JSON(common.Ok(result))
 }
 
+func (r *TodaRouteImpl) ListUserToda(c fiber.Ctx) error {
+	var querier dto.ListUserTodaQuerier
+	if err := c.Bind().Body(&querier); err != nil {
+		globals.LOG.Error("toda list bind error", zap.String("error", err.Error()))
+		return fiber.ErrBadRequest
+	}
+	return c.JSON(common.Or(r.todaService.ListUserToda(globals.MustGetTokenUserContext(c), &querier)))
+}
+
 func (r *TodaRouteImpl) Register(root fiber.Router) {
-	// router := root.Group("/toda")
-	// router.Get("/:id", r.Get)
-	// router.Post("/save", r.Save)
-	// router.Post("/list", r.List)
-	// router.Delete("/:id", r.Delete)
+	router := root.Group("/toda")
+	router.Get("/:id", r.Get)
+	router.Post("/save", r.Save)
+	router.Post("/list", r.List)
+	router.Delete("/:id", r.Delete)
+
 }
 
 func NewTodaRoute(todaService toda.ITodaService) toda.ITodaRoute {

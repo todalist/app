@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/todalist/app/internal/models/dto"
 	"github.com/todalist/app/internal/models/entity"
+	"github.com/todalist/app/internal/models/vo"
 )
 
 type ITodaService interface {
@@ -14,6 +15,8 @@ type ITodaService interface {
 	Save(context.Context, *entity.Toda) (*entity.Toda, error)
 
 	List(context.Context, *dto.TodaQuerier) ([]*entity.Toda, error)
+
+	ListUserToda(context.Context, *dto.ListUserTodaQuerier) ([]*vo.UserTodaVO, error)
 
 	Delete(context.Context, uint) (uint, error)
 }
