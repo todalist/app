@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/goccy/go-yaml"
 	"os"
 	"path/filepath"
@@ -30,10 +31,8 @@ type ModelField struct {
 	ExtraTags string `yaml:"extraTags"`
 }
 
-
-
 // a naive code generator.
-// 
+//
 // TODO dryrun support
 func main() {
 	templateConfigFilePath := os.Getenv("TEMPLATE_CONFIG_PATH")
@@ -79,6 +78,8 @@ func genAllModules(basePath string, models *[]*ModelStruct) {
 func genModule(basePath string, model *ModelStruct) {
 	// check directory is exists
 	modulePath := filepath.Join(basePath, "mods", model.Name)
+	entityPath := filepath.Join(basePath, "models", "entity")
+	dtoPath := filepath.Join(basePath, "models", "dto", fmt.Sprintf("%s.go", model.Name))
 
 	if f, err := os.Stat(modulePath); err == nil && f.IsDir() {
 		if !model.Rewrite {
@@ -93,13 +94,20 @@ func genModule(basePath string, model *ModelStruct) {
 		}
 	}
 	implModulePath := filepath.Join(modulePath, "impl")
-	err := os.MkdirAll(implModulePath, 0755)
-	if err != nil {
+	if err := os.MkdirAll(implModulePath, 0755); err != nil {
+		panic(err)
+	}
+	if err := os.MkdirAll(entityPath, 0755); err != nil {
+		panic(err)
+	}
+	if err := os.MkdirAll(dtoPath, 0755); err != nil {
 		panic(err)
 	}
 
-	// model file
-	RenderAndSave(model, MODEL_TEMPLATE, filepath.Join(modulePath, "model.go"))
+	// entity file
+	RenderAndSave(model, ENTITY_TEMPLATE, filepath.Join(entityPath, fmt.Sprintf("%s.go", model.Name)))
+	// querier file
+	RenderAndSave(model, DTO_TEMPLATE, filepath.Join(dtoPath, fmt.Sprintf("%s.go", model.Name)))
 	// route file
 	RenderAndSave(model, ROUTE_TEMPLATE, filepath.Join(modulePath, "route.go"))
 	RenderAndSave(model, ROUTE_IMPL_TEMPLATE, filepath.Join(implModulePath, "route.go"))
@@ -139,9 +147,8 @@ func Render(model *ModelStruct, tmpl string, name string) string {
 	return buf.String()
 }
 
-
-const MODEL_TEMPLATE = `
-package {{ .Name }}
+const ENTITY_TEMPLATE = `
+package entity
 
 import (
 	"{{ .PackageBase }}/common"
@@ -158,6 +165,20 @@ type {{ .Uname }}Querier struct {
 	{{ $field.Uname }} {{ if isPtrType $field.Type }}{{else}}*{{ end }}{{ $field.Type }} ` + "`json:\"{{ $field.Name }}\"`" + ` {{ end }}
 }
 
+`
+
+const DTO_TEMPLATE = `
+package dto
+
+import (
+	"{{ .PackageBase }}/common"
+)
+
+type {{ .Uname }}Querier struct {
+	common.Pager 
+	Id *uint ` + "`json:\"id\"`" + ` {{ range $index, $field := .Fields }}
+	{{ $field.Uname }} {{ if isPtrType $field.Type }}{{else}}*{{ end }}{{ $field.Type }} ` + "`json:\"{{ $field.Name }}\"`" + ` {{ end }}
+}
 `
 
 const ROUTE_TEMPLATE = `
@@ -190,9 +211,10 @@ const ROUTE_IMPL_TEMPLATE = `
 package {{ .Name }}Impl
 
 import (
-	"{{ .PackageBase }}/mods/{{ .Name }}"
 	"{{ .PackageBase }}/common"
 	"{{ .PackageBase }}/globals"
+	"{{.PackageBase }}/models/dto"
+	"{{.PackageBase }}/models/entity"
 	"github.com/gofiber/fiber/v3"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -216,7 +238,7 @@ func (r *{{ .Uname }}RouteImpl) Get(c fiber.Ctx) error {
 }
 
 func (r *{{ .Uname }}RouteImpl) First(c fiber.Ctx) error {
-	var querier {{ .Name }}.{{ .Uname }}Querier
+	var querier dto.{{ .Uname }}Querier
 	if err := c.Bind().Body(&querier); err != nil {
 		globals.LOG.Error("{{ .Name }} first bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
@@ -225,12 +247,12 @@ func (r *{{ .Uname }}RouteImpl) First(c fiber.Ctx) error {
 }
 
 func (r *{{ .Uname }}RouteImpl) Save(c fiber.Ctx) error {
-	var form {{ .Name }}.{{ .Uname }}
+	var form entity.{{ .Uname }}
 	if err := c.Bind().Body(&form); err != nil {
 		globals.LOG.Error("{{ .Name }} save bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
 	}	
-	var result *{{ .Name }}.{{ .Uname }}
+	var result *entity.{{ .Uname }}
 	err := globals.DB.Transaction(func(tx *gorm.DB) error {
 		save, err := r.{{ .Name }}Service.Save(globals.ContextDB(context.Background(), tx), &form)
 		if err != nil {
@@ -247,7 +269,7 @@ func (r *{{ .Uname }}RouteImpl) Save(c fiber.Ctx) error {
 }
 
 func (r *{{ .Uname }}RouteImpl) List(c fiber.Ctx) error {
-	var querier {{ .Name }}.{{ .Uname }}Querier
+	var querier dto.{{ .Uname }}Querier
 	if err := c.Bind().Body(&querier); err != nil {
 		globals.LOG.Error("{{ .Name }} list bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
@@ -298,6 +320,8 @@ package {{ .Name }}
 
 import (
 	"context"
+	"{{.PackageBase }}/models/entity"
+	"{{.PackageBase }}/models/dto"
 )
 
 type I{{ .Uname }}Service interface {
@@ -305,11 +329,11 @@ type I{{ .Uname }}Service interface {
 	// basic crud
 	Get(context.Context, uint) (*{{ .Uname }}, error)
 
-	First(context.Context, *{{ .Uname }}Querier) (*{{ .Uname }}, error)
+	First(context.Context, *dto.{{ .Uname }}Querier) (*entity.{{ .Uname }}, error)
 
-	Save(context.Context, *{{ .Uname }}) (*{{ .Uname }}, error)
+	Save(context.Context, *entity.{{ .Uname }}) (*entity.{{ .Uname }}, error)
 
-	List(context.Context, *{{ .Uname }}Querier) ([]*{{ .Uname }}, error)
+	List(context.Context, *dto.{{ .Uname }}Querier) ([]*entity.{{ .Uname }}, error)
 
 	Delete(context.Context, uint) (uint, error)
 
@@ -321,8 +345,9 @@ const SERVICE_IMPL_TEMPLATE = `
 package {{ .Name }}Impl
 
 import (
-	"{{ .PackageBase }}/mods/{{ .Name }}"
 	"{{ .PackageBase }}/repo"
+	"{{.PackageBase }}/models/dto"
+	"{{.PackageBase }}/models/entity"
 	"context"
 )
 
@@ -330,22 +355,22 @@ type {{ .Uname }}Service struct {
 	repo repo.IRepo
 }
 
-func (s *{{ .Uname }}Service) Get(ctx context.Context, id uint) (*{{ .Name }}.{{ .Uname }}, error) {
+func (s *{{ .Uname }}Service) Get(ctx context.Context, id uint) (*entity.{{ .Uname }}, error) {
 	{{ .Name }}Repo := s.repo.Get{{ .Uname }}Repo(ctx)
 	return {{ .Name }}Repo.Get(id)
 }
 
-func (s *{{ .Uname }}Service) First(ctx context.Context, querier *{{ .Name }}.{{ .Uname }}Querier) (*{{ .Name }}.{{ .Uname }}, error) {
+func (s *{{ .Uname }}Service) First(ctx context.Context, querier *dto.{{ .Uname }}Querier) (*entity.{{ .Uname }}, error) {
 	{{ .Name }}Repo := s.repo.Get{{ .Uname }}Repo(ctx)
 	return {{ .Name }}Repo.First(querier)
 }
 
-func (s *{{ .Uname }}Service) Save(ctx context.Context, form *{{ .Name }}.{{ .Uname }}) (*{{ .Name }}.{{ .Uname }}, error) {
+func (s *{{ .Uname }}Service) Save(ctx context.Context, form *entity.{{ .Uname }}) (*entity.{{ .Uname }}, error) {
 	{{ .Name }}Repo := s.repo.Get{{ .Uname }}Repo(ctx)
 	return {{ .Name }}Repo.Save(form)
 }
 
-func (s *{{ .Uname }}Service) List(ctx context.Context, querier *{{ .Name }}.{{ .Uname }}Querier) ([]*{{ .Name }}.{{ .Uname }}, error) {
+func (s *{{ .Uname }}Service) List(ctx context.Context, querier *dto.{{ .Uname }}Querier) ([]*entity.{{ .Uname }}, error) {
 	{{ .Name }}Repo := s.repo.Get{{ .Uname }}Repo(ctx)
 	return {{ .Name }}Repo.List(querier)
 }
@@ -366,16 +391,21 @@ func New{{ .Uname }}Service(repo repo.IRepo) *{{ .Uname }}Service {
 const REPO_TEMPLATE = `
 package {{ .Name }}
 
+import (
+	"{{.PackageBase }}/models/entity"
+	"{{.PackageBase }}/models/dto"
+)
+
 type I{{ .Uname }}Repo interface {
 
 	// basic crud
-	Get(uint) (*{{ .Uname }}, error)
+	Get(uint) (*entity.{{ .Uname }}, error)
 
-	First(*{{ .Uname }}Querier) (*{{ .Uname }}, error)
+	First(*dto.{{ .Uname }}Querier) (*entity.{{ .Uname }}, error)
 
-	Save(*{{ .Uname }}) (*{{ .Uname }}, error)
+	Save(*entity.{{ .Uname }}) (*entity.{{ .Uname }}, error)
 
-	List(*{{ .Uname }}Querier) ([]*{{ .Uname }}, error)
+	List(*dto.{{ .Uname }}Querier) ([]*entity.{{ .Uname }}, error)
 
 	Delete(uint) (uint, error)
 
@@ -389,19 +419,20 @@ package {{ .Name }}Impl
 
 import (
 	"gorm.io/gorm"
-	"{{ .PackageBase }}/mods/{{ .Name }}"
 	"{{ .PackageBase }}/common"
+	"{{.PackageBase }}/models/entity"
+	"{{.PackageBase }}/models/dto"
 )
 
 type {{ .Uname }}Repo struct {
 	tx *gorm.DB
 }
 
-func (s *{{ .Uname }}Repo) Get(id uint) (*{{ .Name }}.{{ .Uname }}, error) {
-	return s.First(&{{ .Name }}.{{ .Uname }}Querier{Id: &id})
+func (s *{{ .Uname }}Repo) Get(id uint) (*entity.{{ .Uname }}, error) {
+	return s.First(&dto.{{ .Uname }}Querier{Id: &id})
 }
 
-func (s *{{ .Uname }}Repo) First(querier *{{ .Name }}.{{ .Uname }}Querier) (*{{ .Name }}.{{ .Uname }}, error) {
+func (s *{{ .Uname }}Repo) First(querier *dto.{{ .Uname }}Querier) (*entity.{{ .Uname }}, error) {
 	list, err := s.List(querier)
 	if err != nil {
 		return nil, err
@@ -412,7 +443,7 @@ func (s *{{ .Uname }}Repo) First(querier *{{ .Name }}.{{ .Uname }}Querier) (*{{ 
 	return list[0], nil
 }
 
-func (s *{{ .Uname }}Repo) Save(form *{{ .Name }}.{{ .Uname }}) (*{{ .Name }}.{{ .Uname }}, error) {
+func (s *{{ .Uname }}Repo) Save(form *entity.{{ .Uname }}) (*entity.{{ .Uname }}, error) {
 	if form.Id == 0 {
 		if err := s.tx.Create(form).Error; err != nil {
 			return nil, err
@@ -430,8 +461,8 @@ func (s *{{ .Uname }}Repo) Save(form *{{ .Name }}.{{ .Uname }}) (*{{ .Name }}.{{
 	return form, nil
 }
 
-func (s *{{ .Uname }}Repo) List(querier *{{ .Name }}.{{ .Uname }}Querier) ([]*{{ .Name }}.{{ .Uname }}, error) {
-	var list []*{{ .Name }}.{{ .Uname }}
+func (s *{{ .Uname }}Repo) List(querier *dto.{{ .Uname }}Querier) ([]*entity.{{ .Uname }}, error) {
+	var list []*entity.{{ .Uname }}
 	sql := s.tx.Where(querier)
 	sql = common.Paginate(sql, &querier.Pager)
 	if err := sql.Find(&list).Error; err != nil {
@@ -441,7 +472,7 @@ func (s *{{ .Uname }}Repo) List(querier *{{ .Name }}.{{ .Uname }}Querier) ([]*{{
 }
 
 func (s *{{ .Uname }}Repo) Delete(id uint) (uint, error) {
-	if err := s.tx.Where("id = ?", id).Delete(&{{ .Name }}.{{ .Uname }}{}).Error; err != nil {
+	if err := s.tx.Where("id = ?", id).Delete(&entity.{{ .Uname }}{}).Error; err != nil {
 		return 0, err
 	}
 	return id, nil
