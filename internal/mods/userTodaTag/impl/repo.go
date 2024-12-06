@@ -2,6 +2,8 @@ package userTodaTagImpl
 
 import (
 	"github.com/todalist/app/internal/common"
+	"github.com/todalist/app/internal/models/dto"
+	"github.com/todalist/app/internal/models/entity"
 	"github.com/todalist/app/internal/mods/userTodaTag"
 	"gorm.io/gorm"
 )
@@ -10,15 +12,15 @@ type UserTodaTagRepo struct {
 	tx *gorm.DB
 }
 
-func (s *UserTodaTagRepo) Get(id uint) (*userTodaTag.UserTodaTag, error) {
-	var model userTodaTag.UserTodaTag
+func (s *UserTodaTagRepo) Get(id uint) (*entity.UserTodaTag, error) {
+	var model entity.UserTodaTag
 	if err := s.tx.Where("id = ?", id).First(&model).Error; err != nil {
 		return nil, err
 	}
 	return &model, nil
 }
 
-func (s *UserTodaTagRepo) First(querier *userTodaTag.UserTodaTagQuerier) (*userTodaTag.UserTodaTag, error) {
+func (s *UserTodaTagRepo) First(querier *dto.UserTodaTagQuerier) (*entity.UserTodaTag, error) {
 	list, err := s.List(querier)
 	if err != nil {
 		return nil, err
@@ -29,7 +31,7 @@ func (s *UserTodaTagRepo) First(querier *userTodaTag.UserTodaTagQuerier) (*userT
 	return list[0], nil
 }
 
-func (s *UserTodaTagRepo) Save(form *userTodaTag.UserTodaTag) (*userTodaTag.UserTodaTag, error) {
+func (s *UserTodaTagRepo) Save(form *entity.UserTodaTag) (*entity.UserTodaTag, error) {
 	if form.Id == 0 {
 		if err := s.tx.Create(form).Error; err != nil {
 			return nil, err
@@ -47,8 +49,8 @@ func (s *UserTodaTagRepo) Save(form *userTodaTag.UserTodaTag) (*userTodaTag.User
 	return form, nil
 }
 
-func (s *UserTodaTagRepo) List(querier *userTodaTag.UserTodaTagQuerier) ([]*userTodaTag.UserTodaTag, error) {
-	var list []*userTodaTag.UserTodaTag
+func (s *UserTodaTagRepo) List(querier *dto.UserTodaTagQuerier) ([]*entity.UserTodaTag, error) {
+	var list []*entity.UserTodaTag
 	sql := s.tx.Where(querier)
 	sql = common.Paginate(sql, &querier.Pager)
 	if err := sql.Find(&list).Error; err != nil {
@@ -58,7 +60,7 @@ func (s *UserTodaTagRepo) List(querier *userTodaTag.UserTodaTagQuerier) ([]*user
 }
 
 func (s *UserTodaTagRepo) Delete(id uint) (uint, error) {
-	if err := s.tx.Where("id = ?", id).Delete(&userTodaTag.UserTodaTag{}).Error; err != nil {
+	if err := s.tx.Where("id = ?", id).Delete(&entity.UserTodaTag{}).Error; err != nil {
 		return 0, err
 	}
 	return id, nil

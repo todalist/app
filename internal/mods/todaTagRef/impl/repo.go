@@ -1,20 +1,23 @@
 package todaTagRefImpl
 
 import (
-	"gorm.io/gorm"
-	"github.com/todalist/app/internal/mods/todaTagRef"
 	"github.com/todalist/app/internal/common"
+	"github.com/todalist/app/internal/models/dto"
+	"github.com/todalist/app/internal/models/entity"
+	"github.com/todalist/app/internal/models/vo"
+	"github.com/todalist/app/internal/mods/todaTagRef"
+	"gorm.io/gorm"
 )
 
 type TodaTagRefRepo struct {
 	tx *gorm.DB
 }
 
-func (s *TodaTagRefRepo) Get(id uint) (*todaTagRef.TodaTagRef, error) {
-	return s.First(&todaTagRef.TodaTagRefQuerier{Id: &id})
+func (s *TodaTagRefRepo) Get(id uint) (*entity.TodaTagRef, error) {
+	return s.First(&dto.TodaTagRefQuerier{Id: &id})
 }
 
-func (s *TodaTagRefRepo) First(querier *todaTagRef.TodaTagRefQuerier) (*todaTagRef.TodaTagRef, error) {
+func (s *TodaTagRefRepo) First(querier *dto.TodaTagRefQuerier) (*entity.TodaTagRef, error) {
 	list, err := s.List(querier)
 	if err != nil {
 		return nil, err
@@ -25,7 +28,7 @@ func (s *TodaTagRefRepo) First(querier *todaTagRef.TodaTagRefQuerier) (*todaTagR
 	return list[0], nil
 }
 
-func (s *TodaTagRefRepo) Save(form *todaTagRef.TodaTagRef) (*todaTagRef.TodaTagRef, error) {
+func (s *TodaTagRefRepo) Save(form *entity.TodaTagRef) (*entity.TodaTagRef, error) {
 	if form.Id == 0 {
 		if err := s.tx.Create(form).Error; err != nil {
 			return nil, err
@@ -43,8 +46,8 @@ func (s *TodaTagRefRepo) Save(form *todaTagRef.TodaTagRef) (*todaTagRef.TodaTagR
 	return form, nil
 }
 
-func (s *TodaTagRefRepo) List(querier *todaTagRef.TodaTagRefQuerier) ([]*todaTagRef.TodaTagRef, error) {
-	var list []*todaTagRef.TodaTagRef
+func (s *TodaTagRefRepo) List(querier *dto.TodaTagRefQuerier) ([]*entity.TodaTagRef, error) {
+	var list []*entity.TodaTagRef
 	sql := s.tx.Where(querier)
 	sql = common.Paginate(sql, &querier.Pager)
 	if err := sql.Find(&list).Error; err != nil {
@@ -54,14 +57,14 @@ func (s *TodaTagRefRepo) List(querier *todaTagRef.TodaTagRefQuerier) ([]*todaTag
 }
 
 func (s *TodaTagRefRepo) Delete(id uint) (uint, error) {
-	if err := s.tx.Where("id = ?", id).Delete(&todaTagRef.TodaTagRef{}).Error; err != nil {
+	if err := s.tx.Where("id = ?", id).Delete(&entity.TodaTagRef{}).Error; err != nil {
 		return 0, err
 	}
 	return id, nil
 }
 
-func (s *TodaTagRefRepo) ListTodaTagByTodaIds(ids []uint) ([]*todaTagRef.TodaTagVO, error) {
-	var list []*todaTagRef.TodaTagVO
+func (s *TodaTagRefRepo) ListTodaTagByTodaIds(ids []uint) ([]*vo.TodaTagVO, error) {
+	var list []*vo.TodaTagVO
 	return list, nil
 }
 

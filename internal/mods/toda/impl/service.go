@@ -4,8 +4,8 @@ import (
 	"context"
 	"github.com/gofiber/fiber/v3"
 	"github.com/todalist/app/internal/globals"
-	"github.com/todalist/app/internal/mods/toda"
-	"github.com/todalist/app/internal/mods/userToda"
+	"github.com/todalist/app/internal/models/dto"
+	"github.com/todalist/app/internal/models/entity"
 	"github.com/todalist/app/internal/repo"
 	"go.uber.org/zap"
 )
@@ -14,22 +14,22 @@ type TodaService struct {
 	repo repo.IRepo
 }
 
-func (s *TodaService) Get(ctx context.Context, id uint) (*toda.Toda, error) {
+func (s *TodaService) Get(ctx context.Context, id uint) (*entity.Toda, error) {
 	todaRepo := s.repo.GetTodaRepo(ctx)
 	return todaRepo.Get(id)
 }
 
-func (s *TodaService) Save(ctx context.Context, form *toda.Toda) (*toda.Toda, error) {
+func (s *TodaService) Save(ctx context.Context, form *entity.Toda) (*entity.Toda, error) {
 	todaRepo := s.repo.GetTodaRepo(ctx)
 	userTodaRepo := s.repo.GetUserTodaRepo(ctx)
 	tokenUser := globals.MustGetTokenUserFromContext(ctx)
 	isCreate := form.Id < 1
 	if isCreate {
 		form.UserId = tokenUser.UserId
-		form.Status = toda.TodaStatusTodo
+		form.Status = entity.TodaStatusTodo
 	} else {
 		// check user permission
-		_, err := userTodaRepo.First(&userToda.UserTodaQuerier{
+		_, err := userTodaRepo.First(&dto.UserTodaQuerier{
 			UserId: &tokenUser.UserId,
 			TodaId: &form.Id,
 		})
@@ -44,7 +44,7 @@ func (s *TodaService) Save(ctx context.Context, form *toda.Toda) (*toda.Toda, er
 	}
 	if form.Priority == 0 {
 		// TODO to support user config
-		form.Priority = toda.TodaPriorityLow
+		form.Priority = entity.TodaPriorityLow
 	}
 	form, err := todaRepo.Save(form)
 	if err != nil {
@@ -52,7 +52,7 @@ func (s *TodaService) Save(ctx context.Context, form *toda.Toda) (*toda.Toda, er
 	}
 	if isCreate {
 		// init toda with user
-		_, err := userTodaRepo.Save(&userToda.UserToda{
+		_, err := userTodaRepo.Save(&entity.UserToda{
 			UserId: form.UserId,
 			TodaId: form.Id,
 		})
@@ -63,7 +63,7 @@ func (s *TodaService) Save(ctx context.Context, form *toda.Toda) (*toda.Toda, er
 	return form, nil
 }
 
-func (s *TodaService) List(ctx context.Context, querier *toda.TodaQuerier) ([]*toda.Toda, error) {
+func (s *TodaService) List(ctx context.Context, querier *dto.TodaQuerier) ([]*entity.Toda, error) {
 	todaRepo := s.repo.GetTodaRepo(ctx)
 	tokenUser := globals.MustGetTokenUserFromContext(ctx)
 	querier.UserId = &tokenUser.UserId
@@ -74,7 +74,7 @@ func (s *TodaService) Delete(ctx context.Context, id uint) (uint, error) {
 	todaRepo := s.repo.GetTodaRepo(ctx)
 	userTodaRepo := s.repo.GetUserTodaRepo(ctx)
 	tokenUser := globals.MustGetTokenUserFromContext(ctx)
-	_, err := userTodaRepo.First(&userToda.UserTodaQuerier{
+	_, err := userTodaRepo.First(&dto.UserTodaQuerier{
 		UserId: &tokenUser.UserId,
 		TodaId: &id,
 	})

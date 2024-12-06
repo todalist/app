@@ -5,8 +5,8 @@ import (
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/todalist/app/internal/globals"
-	"github.com/todalist/app/internal/mods/todaTag"
-	"github.com/todalist/app/internal/mods/userTodaTag"
+	"github.com/todalist/app/internal/models/dto"
+	"github.com/todalist/app/internal/models/entity"
 	"github.com/todalist/app/internal/repo"
 	"go.uber.org/zap"
 )
@@ -15,17 +15,17 @@ type TodaTagService struct {
 	repo repo.IRepo
 }
 
-func (s *TodaTagService) Get(ctx context.Context, id uint) (*todaTag.TodaTag, error) {
+func (s *TodaTagService) Get(ctx context.Context, id uint) (*entity.TodaTag, error) {
 	todaTagRepo := s.repo.GetTodaTagRepo(ctx)
 	return todaTagRepo.Get(id)
 }
 
-func (s *TodaTagService) First(ctx context.Context, querier *todaTag.TodaTagQuerier) (*todaTag.TodaTag, error) {
+func (s *TodaTagService) First(ctx context.Context, querier *dto.TodaTagQuerier) (*entity.TodaTag, error) {
 	todaTagRepo := s.repo.GetTodaTagRepo(ctx)
 	return todaTagRepo.First(querier)
 }
 
-func (s *TodaTagService) Save(ctx context.Context, form *todaTag.TodaTag) (*todaTag.TodaTag, error) {
+func (s *TodaTagService) Save(ctx context.Context, form *entity.TodaTag) (*entity.TodaTag, error) {
 	todaTagRepo := s.repo.GetTodaTagRepo(ctx)
 	userTodaTagRepo := s.repo.GetUserTodaTagRepo(ctx)
 	tokenUser := globals.MustGetTokenUserFromContext(ctx)
@@ -34,7 +34,7 @@ func (s *TodaTagService) Save(ctx context.Context, form *todaTag.TodaTag) (*toda
 		form.UserId = tokenUser.UserId
 	} else {
 		// check user permission
-		_, err := userTodaTagRepo.First(&userTodaTag.UserTodaTagQuerier{
+		_, err := userTodaTagRepo.First(&dto.UserTodaTagQuerier{
 			UserId:    &tokenUser.UserId,
 			TodaTagId: &form.Id,
 		})
@@ -53,7 +53,7 @@ func (s *TodaTagService) Save(ctx context.Context, form *todaTag.TodaTag) (*toda
 	}
 	if isCreate {
 		// init todaTag with user
-		_, err := userTodaTagRepo.Save(&userTodaTag.UserTodaTag{
+		_, err := userTodaTagRepo.Save(&entity.UserTodaTag{
 			UserId:    form.UserId,
 			TodaTagId: form.Id,
 		})
@@ -64,7 +64,7 @@ func (s *TodaTagService) Save(ctx context.Context, form *todaTag.TodaTag) (*toda
 	return form, nil
 }
 
-func (s *TodaTagService) List(ctx context.Context, querier *todaTag.TodaTagQuerier) ([]*todaTag.TodaTag, error) {
+func (s *TodaTagService) List(ctx context.Context, querier *dto.TodaTagQuerier) ([]*entity.TodaTag, error) {
 	todaTagRepo := s.repo.GetTodaTagRepo(ctx)
 	tokenUser := globals.MustGetTokenUserFromContext(ctx)
 	querier.UserId = &tokenUser.UserId
@@ -76,7 +76,7 @@ func (s *TodaTagService) Delete(ctx context.Context, id uint) (uint, error) {
 	userTodaTagRepo := s.repo.GetUserTodaTagRepo(ctx)
 	tokenUser := globals.MustGetTokenUserFromContext(ctx)
 	// check user permission
-	_, err := userTodaTagRepo.First(&userTodaTag.UserTodaTagQuerier{
+	_, err := userTodaTagRepo.First(&dto.UserTodaTagQuerier{
 		UserId:    &tokenUser.UserId,
 		TodaTagId: &id,
 	})

@@ -1,4 +1,4 @@
-package todaTag
+package entity
 
 import (
 	"github.com/todalist/app/internal/common"
@@ -9,12 +9,4 @@ type TodaTag struct {
 	Name        string `json:"name" `
 	AccentColor string `json:"accentColor" `
 	UserId      uint   `json:"userId" gorm:"index"`
-}
-
-type TodaTagQuerier struct {
-	common.Pager
-	Id          *uint   `json:"id"`
-	Name        *string `json:"name"`
-	AccentColor *string `json:"accentColor"`
-	UserId      *uint   `json:"userId"`
 }

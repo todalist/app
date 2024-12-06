@@ -1,15 +1,20 @@
 package user
 
+import (
+	"github.com/todalist/app/internal/models/dto"
+	"github.com/todalist/app/internal/models/entity"
+)
+
 type IUserRepo interface {
 
 	// basic crud
-	Get(uint) (*User, error)
+	Get(uint) (*entity.User, error)
 
-	First(*UserQuerier) (*User, error)
+	First(*dto.UserQuerier) (*entity.User, error)
 
-	Save(*User) (*User, error)
+	Save(*entity.User) (*entity.User, error)
 
-	List(*UserQuerier) ([]*User, error)
+	List(*dto.UserQuerier) ([]*entity.User, error)
 
 	Delete(uint) (uint, error)
 

@@ -1,15 +1,20 @@
 package todaTag
 
+import (
+	"github.com/todalist/app/internal/models/dto"
+	"github.com/todalist/app/internal/models/entity"
+)
+
 type ITodaTagRepo interface {
 
 	// basic crud
-	Get(uint) (*TodaTag, error)
+	Get(uint) (*entity.TodaTag, error)
 
-	First(*TodaTagQuerier) (*TodaTag, error)
+	First(*dto.TodaTagQuerier) (*entity.TodaTag, error)
 
-	Save(*TodaTag) (*TodaTag, error)
+	Save(*entity.TodaTag) (*entity.TodaTag, error)
 
-	List(*TodaTagQuerier) ([]*TodaTag, error)
+	List(*dto.TodaTagQuerier) ([]*entity.TodaTag, error)
 
 	Delete(uint) (uint, error)
 

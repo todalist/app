@@ -1,31 +1,32 @@
 package todaTagRefImpl
 
 import (
-	"github.com/todalist/app/internal/mods/todaTagRef"
-	"github.com/todalist/app/internal/repo"
 	"context"
+	"github.com/todalist/app/internal/models/dto"
+	"github.com/todalist/app/internal/models/entity"
+	"github.com/todalist/app/internal/repo"
 )
 
 type TodaTagRefService struct {
 	repo repo.IRepo
 }
 
-func (s *TodaTagRefService) Get(ctx context.Context, id uint) (*todaTagRef.TodaTagRef, error) {
+func (s *TodaTagRefService) Get(ctx context.Context, id uint) (*entity.TodaTagRef, error) {
 	todaTagRefRepo := s.repo.GetTodaTagRefRepo(ctx)
 	return todaTagRefRepo.Get(id)
 }
 
-func (s *TodaTagRefService) First(ctx context.Context, querier *todaTagRef.TodaTagRefQuerier) (*todaTagRef.TodaTagRef, error) {
+func (s *TodaTagRefService) First(ctx context.Context, querier *dto.TodaTagRefQuerier) (*entity.TodaTagRef, error) {
 	todaTagRefRepo := s.repo.GetTodaTagRefRepo(ctx)
 	return todaTagRefRepo.First(querier)
 }
 
-func (s *TodaTagRefService) Save(ctx context.Context, form *todaTagRef.TodaTagRef) (*todaTagRef.TodaTagRef, error) {
+func (s *TodaTagRefService) Save(ctx context.Context, form *entity.TodaTagRef) (*entity.TodaTagRef, error) {
 	todaTagRefRepo := s.repo.GetTodaTagRefRepo(ctx)
 	return todaTagRefRepo.Save(form)
 }
 
-func (s *TodaTagRefService) List(ctx context.Context, querier *todaTagRef.TodaTagRefQuerier) ([]*todaTagRef.TodaTagRef, error) {
+func (s *TodaTagRefService) List(ctx context.Context, querier *dto.TodaTagRefQuerier) ([]*entity.TodaTagRef, error) {
 	todaTagRefRepo := s.repo.GetTodaTagRefRepo(ctx)
 	return todaTagRefRepo.List(querier)
 }

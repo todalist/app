@@ -2,8 +2,10 @@ package userTodaImpl
 
 import (
 	"fmt"
-
 	"github.com/todalist/app/internal/common"
+	"github.com/todalist/app/internal/models/dto"
+	"github.com/todalist/app/internal/models/entity"
+	"github.com/todalist/app/internal/models/vo"
 	"github.com/todalist/app/internal/mods/userToda"
 	"gorm.io/gorm"
 )
@@ -12,15 +14,15 @@ type UserTodaRepo struct {
 	tx *gorm.DB
 }
 
-func (s *UserTodaRepo) Get(id uint) (*userToda.UserToda, error) {
-	var model userToda.UserToda
+func (s *UserTodaRepo) Get(id uint) (*entity.UserToda, error) {
+	var model entity.UserToda
 	if err := s.tx.Where("id = ?", id).First(&model).Error; err != nil {
 		return nil, err
 	}
 	return &model, nil
 }
 
-func (s *UserTodaRepo) First(querier *userToda.UserTodaQuerier) (*userToda.UserToda, error) {
+func (s *UserTodaRepo) First(querier *dto.UserTodaQuerier) (*entity.UserToda, error) {
 	list, err := s.List(querier)
 	if err != nil {
 		return nil, err
@@ -31,7 +33,7 @@ func (s *UserTodaRepo) First(querier *userToda.UserTodaQuerier) (*userToda.UserT
 	return list[0], nil
 }
 
-func (s *UserTodaRepo) Save(form *userToda.UserToda) (*userToda.UserToda, error) {
+func (s *UserTodaRepo) Save(form *entity.UserToda) (*entity.UserToda, error) {
 	if form.Id == 0 {
 		if err := s.tx.Create(form).Error; err != nil {
 			return nil, err
@@ -49,8 +51,8 @@ func (s *UserTodaRepo) Save(form *userToda.UserToda) (*userToda.UserToda, error)
 	return form, nil
 }
 
-func (s *UserTodaRepo) List(querier *userToda.UserTodaQuerier) ([]*userToda.UserToda, error) {
-	var list []*userToda.UserToda
+func (s *UserTodaRepo) List(querier *dto.UserTodaQuerier) ([]*entity.UserToda, error) {
+	var list []*entity.UserToda
 	sql := s.tx.Where(querier)
 	sql = common.Paginate(sql, &querier.Pager)
 	if err := sql.Find(&list).Error; err != nil {
@@ -60,21 +62,21 @@ func (s *UserTodaRepo) List(querier *userToda.UserTodaQuerier) ([]*userToda.User
 }
 
 func (s *UserTodaRepo) Delete(id uint) (uint, error) {
-	if err := s.tx.Where("id = ?", id).Delete(&userToda.UserToda{}).Error; err != nil {
+	if err := s.tx.Where("id = ?", id).Delete(&entity.UserToda{}).Error; err != nil {
 		return 0, err
 	}
 	return id, nil
 }
 
 func (s *UserTodaRepo) DeleteByTodaId(todaId uint) error {
-	if err := s.tx.Where("toda_id = ?", todaId).Delete(&userToda.UserToda{}).Error; err != nil {
+	if err := s.tx.Where("toda_id = ?", todaId).Delete(&entity.UserToda{}).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func (s *UserTodaRepo) ListUserToda(querier *userToda.ListUserTodaQuerier) ([]*userToda.UserTodaVO, error) {
-	var list []*userToda.UserTodaVO
+func (s *UserTodaRepo) ListUserToda(querier *dto.ListUserTodaQuerier) ([]*vo.UserTodaVO, error) {
+	var list []*vo.UserTodaVO
 	cond, args := common.QuerierToSqlCondition(nil, querier, "t")
 	if cond == "" {
 		cond = "1 = 1"
@@ -101,7 +103,6 @@ WHERE
 	if err := sql.Find(&list).Error; err != nil {
 		return nil, err
 	}
-	return list, nil
 	return list, nil
 }
 

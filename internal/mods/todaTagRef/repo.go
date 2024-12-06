@@ -1,18 +1,24 @@
 package todaTagRef
 
+import (
+	"github.com/todalist/app/internal/models/dto"
+	"github.com/todalist/app/internal/models/entity"
+	"github.com/todalist/app/internal/models/vo"
+)
+
 type ITodaTagRefRepo interface {
 
 	// basic crud
-	Get(uint) (*TodaTagRef, error)
+	Get(uint) (*entity.TodaTagRef, error)
 
-	First(*TodaTagRefQuerier) (*TodaTagRef, error)
+	First(*dto.TodaTagRefQuerier) (*entity.TodaTagRef, error)
 
-	Save(*TodaTagRef) (*TodaTagRef, error)
+	Save(*entity.TodaTagRef) (*entity.TodaTagRef, error)
 
-	List(*TodaTagRefQuerier) ([]*TodaTagRef, error)
+	List(*dto.TodaTagRefQuerier) ([]*entity.TodaTagRef, error)
 
 	Delete(uint) (uint, error)
 
-	ListTodaTagByTodaIds([]uint) ([]*TodaTagVO, error)
+	ListTodaTagByTodaIds([]uint) ([]*vo.TodaTagVO, error)
 
 }

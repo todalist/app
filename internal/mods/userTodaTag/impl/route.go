@@ -6,6 +6,8 @@ import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/todalist/app/internal/common"
 	"github.com/todalist/app/internal/globals"
+	"github.com/todalist/app/internal/models/dto"
+	"github.com/todalist/app/internal/models/entity"
 	"github.com/todalist/app/internal/mods/userTodaTag"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -28,7 +30,7 @@ func (r *UserTodaTagRouteImpl) Get(c fiber.Ctx) error {
 }
 
 func (r *UserTodaTagRouteImpl) First(c fiber.Ctx) error {
-	var querier userTodaTag.UserTodaTagQuerier
+	var querier dto.UserTodaTagQuerier
 	if err := c.Bind().Body(&querier); err != nil {
 		globals.LOG.Error("userTodaTag first bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
@@ -37,12 +39,12 @@ func (r *UserTodaTagRouteImpl) First(c fiber.Ctx) error {
 }
 
 func (r *UserTodaTagRouteImpl) Save(c fiber.Ctx) error {
-	var form userTodaTag.UserTodaTag
+	var form entity.UserTodaTag
 	if err := c.Bind().Body(&form); err != nil {
 		globals.LOG.Error("userTodaTag save bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
 	}
-	var result *userTodaTag.UserTodaTag
+	var result *entity.UserTodaTag
 	err := globals.DB.Transaction(func(tx *gorm.DB) error {
 		save, err := r.userTodaTagService.Save(globals.ContextDB(context.Background(), tx), &form)
 		if err != nil {
@@ -59,7 +61,7 @@ func (r *UserTodaTagRouteImpl) Save(c fiber.Ctx) error {
 }
 
 func (r *UserTodaTagRouteImpl) List(c fiber.Ctx) error {
-	var querier userTodaTag.UserTodaTagQuerier
+	var querier dto.UserTodaTagQuerier
 	if err := c.Bind().Body(&querier); err != nil {
 		globals.LOG.Error("userTodaTag list bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest

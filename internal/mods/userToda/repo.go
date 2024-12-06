@@ -1,19 +1,25 @@
 package userToda
 
+import (
+	"github.com/todalist/app/internal/models/dto"
+	"github.com/todalist/app/internal/models/entity"
+	"github.com/todalist/app/internal/models/vo"
+)
+
 type IUserTodaRepo interface {
 
 	// basic crud
-	Get(uint) (*UserToda, error)
+	Get(uint) (*entity.UserToda, error)
 
-	First(*UserTodaQuerier) (*UserToda, error)
+	First(*dto.UserTodaQuerier) (*entity.UserToda, error)
 
-	Save(*UserToda) (*UserToda, error)
+	Save(*entity.UserToda) (*entity.UserToda, error)
 
-	List(*UserTodaQuerier) ([]*UserToda, error)
+	List(*dto.UserTodaQuerier) ([]*entity.UserToda, error)
 
 	Delete(uint) (uint, error)
 	
 	DeleteByTodaId(uint) error
 
-	ListUserToda(*ListUserTodaQuerier) ([]*UserTodaVO, error)
+	ListUserToda(*dto.ListUserTodaQuerier) ([]*vo.UserTodaVO, error)
 }

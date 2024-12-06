@@ -6,6 +6,8 @@ import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/todalist/app/internal/common"
 	"github.com/todalist/app/internal/globals"
+	"github.com/todalist/app/internal/models/dto"
+	"github.com/todalist/app/internal/models/entity"
 	"github.com/todalist/app/internal/mods/user"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -28,7 +30,7 @@ func (r *UserRouteImpl) Get(c fiber.Ctx) error {
 }
 
 func (r *UserRouteImpl) First(c fiber.Ctx) error {
-	var querier user.UserQuerier
+	var querier dto.UserQuerier
 	if err := c.Bind().Body(&querier); err != nil {
 		globals.LOG.Error("user first bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
@@ -37,12 +39,12 @@ func (r *UserRouteImpl) First(c fiber.Ctx) error {
 }
 
 func (r *UserRouteImpl) Save(c fiber.Ctx) error {
-	var form user.User
+	var form entity.User
 	if err := c.Bind().Body(&form); err != nil {
 		globals.LOG.Error("user save bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
 	}
-	var result *user.User
+	var result *entity.User
 	err := globals.DB.Transaction(func(tx *gorm.DB) error {
 		save, err := r.userService.Save(globals.ContextDB(context.Background(), tx), &form)
 		if err != nil {
@@ -59,7 +61,7 @@ func (r *UserRouteImpl) Save(c fiber.Ctx) error {
 }
 
 func (r *UserRouteImpl) List(c fiber.Ctx) error {
-	var querier user.UserQuerier
+	var querier dto.UserQuerier
 	if err := c.Bind().Body(&querier); err != nil {
 		globals.LOG.Error("user list bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest

@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"github.com/todalist/app/internal/common"
+	"github.com/todalist/app/internal/models/dto"
+	"github.com/todalist/app/internal/models/entity"
 	"github.com/todalist/app/internal/mods/todaTag"
 	"gorm.io/gorm"
 )
@@ -12,13 +14,13 @@ type TodaTagRepo struct {
 	tx *gorm.DB
 }
 
-func (s *TodaTagRepo) Get(id uint) (*todaTag.TodaTag, error) {
-	return s.First(&todaTag.TodaTagQuerier{
+func (s *TodaTagRepo) Get(id uint) (*entity.TodaTag, error) {
+	return s.First(&dto.TodaTagQuerier{
 		Id: &id,
 	})
 }
 
-func (s *TodaTagRepo) First(querier *todaTag.TodaTagQuerier) (*todaTag.TodaTag, error) {
+func (s *TodaTagRepo) First(querier *dto.TodaTagQuerier) (*entity.TodaTag, error) {
 	list, err := s.List(querier)
 	if err != nil {
 		return nil, err
@@ -29,7 +31,7 @@ func (s *TodaTagRepo) First(querier *todaTag.TodaTagQuerier) (*todaTag.TodaTag, 
 	return list[0], nil
 }
 
-func (s *TodaTagRepo) Save(form *todaTag.TodaTag) (*todaTag.TodaTag, error) {
+func (s *TodaTagRepo) Save(form *entity.TodaTag) (*entity.TodaTag, error) {
 	if form.Id == 0 {
 		if err := s.tx.Create(form).Error; err != nil {
 			return nil, err
@@ -47,8 +49,8 @@ func (s *TodaTagRepo) Save(form *todaTag.TodaTag) (*todaTag.TodaTag, error) {
 	return form, nil
 }
 
-func (s *TodaTagRepo) List(querier *todaTag.TodaTagQuerier) ([]*todaTag.TodaTag, error) {
-	var list []*todaTag.TodaTag
+func (s *TodaTagRepo) List(querier *dto.TodaTagQuerier) ([]*entity.TodaTag, error) {
+	var list []*entity.TodaTag
 	cond, args := common.QuerierToSqlCondition(nil, querier, "tt")
 	if cond == "" {
 		cond = "1 = 1"
@@ -76,7 +78,7 @@ WHERE
 }
 
 func (s *TodaTagRepo) Delete(id uint) (uint, error) {
-	if err := s.tx.Where("id = ?", id).Delete(&todaTag.TodaTag{}).Error; err != nil {
+	if err := s.tx.Where("id = ?", id).Delete(&entity.TodaTag{}).Error; err != nil {
 		return 0, err
 	}
 	return id, nil

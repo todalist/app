@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"github.com/todalist/app/internal/common"
+	"github.com/todalist/app/internal/models/dto"
+	"github.com/todalist/app/internal/models/entity"
 	"github.com/todalist/app/internal/mods/toda"
 	"gorm.io/gorm"
 )
@@ -12,11 +14,11 @@ type TodaRepo struct {
 	tx *gorm.DB
 }
 
-func (s *TodaRepo) Get(id uint) (*toda.Toda, error) {
-	return s.First(&toda.TodaQuerier{Id: &id})
+func (s *TodaRepo) Get(id uint) (*entity.Toda, error) {
+	return s.First(&dto.TodaQuerier{Id: &id})
 }
 
-func (s *TodaRepo) First(querier *toda.TodaQuerier) (*toda.Toda, error) {
+func (s *TodaRepo) First(querier *dto.TodaQuerier) (*entity.Toda, error) {
 	list, err := s.List(querier)
 	if err != nil {
 		return nil, err
@@ -27,7 +29,7 @@ func (s *TodaRepo) First(querier *toda.TodaQuerier) (*toda.Toda, error) {
 	return list[0], nil
 }
 
-func (s *TodaRepo) Save(form *toda.Toda) (*toda.Toda, error) {
+func (s *TodaRepo) Save(form *entity.Toda) (*entity.Toda, error) {
 	if form.Id == 0 {
 		if err := s.tx.Create(form).Error; err != nil {
 			return nil, err
@@ -45,8 +47,8 @@ func (s *TodaRepo) Save(form *toda.Toda) (*toda.Toda, error) {
 	return form, nil
 }
 
-func (s *TodaRepo) List(querier *toda.TodaQuerier) ([]*toda.Toda, error) {
-	var list []*toda.Toda
+func (s *TodaRepo) List(querier *dto.TodaQuerier) ([]*entity.Toda, error) {
+	var list []*entity.Toda
 
 	cond, args := common.QuerierToSqlCondition(nil, querier, "t")
 	if cond == "" {
@@ -76,7 +78,7 @@ WHERE
 }
 
 func (s *TodaRepo) Delete(id uint) (uint, error) {
-	if err := s.tx.Where("id = ?", id).Delete(&toda.Toda{}).Error; err != nil {
+	if err := s.tx.Where("id = ?", id).Delete(&entity.Toda{}).Error; err != nil {
 		return 0, err
 	}
 	return id, nil

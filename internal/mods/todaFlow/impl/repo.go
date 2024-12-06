@@ -2,6 +2,8 @@ package todaFlowImpl
 
 import (
 	"github.com/todalist/app/internal/common"
+	"github.com/todalist/app/internal/models/dto"
+	"github.com/todalist/app/internal/models/entity"
 	"github.com/todalist/app/internal/mods/todaFlow"
 	"gorm.io/gorm"
 )
@@ -10,15 +12,15 @@ type TodaFlowRepo struct {
 	tx *gorm.DB
 }
 
-func (s *TodaFlowRepo) Get(id uint) (*todaFlow.TodaFlow, error) {
-	var model todaFlow.TodaFlow
+func (s *TodaFlowRepo) Get(id uint) (*entity.TodaFlow, error) {
+	var model entity.TodaFlow
 	if err := s.tx.Where("id = ?", id).First(&model).Error; err != nil {
 		return nil, err
 	}
 	return &model, nil
 }
 
-func (s *TodaFlowRepo) First(querier *todaFlow.TodaFlowQuerier) (*todaFlow.TodaFlow, error) {
+func (s *TodaFlowRepo) First(querier *dto.TodaFlowQuerier) (*entity.TodaFlow, error) {
 	list, err := s.List(querier)
 	if err != nil {
 		return nil, err
@@ -29,7 +31,7 @@ func (s *TodaFlowRepo) First(querier *todaFlow.TodaFlowQuerier) (*todaFlow.TodaF
 	return list[0], nil
 }
 
-func (s *TodaFlowRepo) Save(form *todaFlow.TodaFlow) (*todaFlow.TodaFlow, error) {
+func (s *TodaFlowRepo) Save(form *entity.TodaFlow) (*entity.TodaFlow, error) {
 	if form.Id == 0 {
 		if err := s.tx.Create(form).Error; err != nil {
 			return nil, err
@@ -47,8 +49,8 @@ func (s *TodaFlowRepo) Save(form *todaFlow.TodaFlow) (*todaFlow.TodaFlow, error)
 	return form, nil
 }
 
-func (s *TodaFlowRepo) List(querier *todaFlow.TodaFlowQuerier) ([]*todaFlow.TodaFlow, error) {
-	var list []*todaFlow.TodaFlow
+func (s *TodaFlowRepo) List(querier *dto.TodaFlowQuerier) ([]*entity.TodaFlow, error) {
+	var list []*entity.TodaFlow
 	sql := s.tx.Where(querier)
 	sql = common.Paginate(sql, &querier.Pager)
 	if err := sql.Find(&list).Error; err != nil {
@@ -58,7 +60,7 @@ func (s *TodaFlowRepo) List(querier *todaFlow.TodaFlowQuerier) ([]*todaFlow.Toda
 }
 
 func (s *TodaFlowRepo) Delete(id uint) (uint, error) {
-	if err := s.tx.Where("id = ?", id).Delete(&todaFlow.TodaFlow{}).Error; err != nil {
+	if err := s.tx.Where("id = ?", id).Delete(&entity.TodaFlow{}).Error; err != nil {
 		return 0, err
 	}
 	return id, nil

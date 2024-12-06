@@ -1,13 +1,15 @@
 package todaTagRefImpl
 
 import (
-	"github.com/todalist/app/internal/mods/todaTagRef"
+	"context"
+	"github.com/gofiber/fiber/v3"
 	"github.com/todalist/app/internal/common"
 	"github.com/todalist/app/internal/globals"
-	"github.com/gofiber/fiber/v3"
+	"github.com/todalist/app/internal/models/dto"
+	"github.com/todalist/app/internal/models/entity"
+	"github.com/todalist/app/internal/mods/todaTagRef"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
-	"context"
 )
 
 type TodaTagRefRouteImpl struct {
@@ -27,7 +29,7 @@ func (r *TodaTagRefRouteImpl) Get(c fiber.Ctx) error {
 }
 
 func (r *TodaTagRefRouteImpl) First(c fiber.Ctx) error {
-	var querier todaTagRef.TodaTagRefQuerier
+	var querier dto.TodaTagRefQuerier
 	if err := c.Bind().Body(&querier); err != nil {
 		globals.LOG.Error("todaTagRef first bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
@@ -36,12 +38,12 @@ func (r *TodaTagRefRouteImpl) First(c fiber.Ctx) error {
 }
 
 func (r *TodaTagRefRouteImpl) Save(c fiber.Ctx) error {
-	var form todaTagRef.TodaTagRef
+	var form entity.TodaTagRef
 	if err := c.Bind().Body(&form); err != nil {
 		globals.LOG.Error("todaTagRef save bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
 	}	
-	var result *todaTagRef.TodaTagRef
+	var result *entity.TodaTagRef
 	err := globals.DB.Transaction(func(tx *gorm.DB) error {
 		save, err := r.todaTagRefService.Save(globals.ContextDB(context.Background(), tx), &form)
 		if err != nil {
@@ -58,7 +60,7 @@ func (r *TodaTagRefRouteImpl) Save(c fiber.Ctx) error {
 }
 
 func (r *TodaTagRefRouteImpl) List(c fiber.Ctx) error {
-	var querier todaTagRef.TodaTagRefQuerier
+	var querier dto.TodaTagRefQuerier
 	if err := c.Bind().Body(&querier); err != nil {
 		globals.LOG.Error("todaTagRef list bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
