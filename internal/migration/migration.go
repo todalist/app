@@ -1,16 +1,20 @@
 package migration
 
 import (
-	"log"
-
 	"github.com/todalist/app/internal/globals"
+	"github.com/todalist/app/internal/models/entity"
+	"log"
 )
 
 func MustMigration() {
 	if err := globals.DB.AutoMigrate(
-	// &models.User{},
-	// &models.Todo{},
-	// &models.TodoCatalog{},
+		&entity.User{},
+		&entity.Toda{},
+		&entity.TodaFlow{},
+		&entity.TodaTag{},
+		&entity.TodaTagRef{},
+		&entity.UserToda{},
+		&entity.UserTodaTag{},
 	); err != nil {
 		log.Fatalf("migration failed: %v", err)
 	}

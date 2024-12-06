@@ -2,7 +2,6 @@ package sysImpl
 
 import (
 	"context"
-
 	"github.com/gofiber/fiber/v3"
 	"github.com/todalist/app/internal/common"
 	"github.com/todalist/app/internal/globals"
@@ -29,7 +28,7 @@ func (r *SysRouteImpl) PasswordLogin(c fiber.Ctx) error {
 
 func (r *SysRouteImpl) Register(root fiber.Router) {
 	router := root.Group("/sys")
-	router.Post("/authentication/password", r.PasswordLogin)
+	router.Post("/authentication/passwordLogin", r.PasswordLogin)
 }
 
 func NewSysRoute(sysService sys.ISysService) sys.ISysRoute {
