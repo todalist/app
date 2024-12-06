@@ -65,8 +65,8 @@ INNER JOIN
 WHERE
 	utt.user_id = @userId
 	AND %s
-	AND tt.deleted_at IS NOT NULL
-	AND utt.deleted_at IS NOT NULL
+	AND tt.deleted_at IS NULL
+	AND utt.deleted_at IS NULL
 	`, cond)
 	(*args)["userId"] = querier.UserId
 	sql := s.tx.Raw(sqlStr, args)

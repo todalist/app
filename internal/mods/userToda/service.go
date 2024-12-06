@@ -10,17 +10,8 @@ import (
 
 type IUserTodaService interface {
 
-	// basic crud
-	Get(context.Context, uint) (*entity.UserToda, error)
-
-	First(context.Context, *dto.UserTodaQuerier) (*entity.UserToda, error)
-
-	Save(context.Context, *entity.UserToda) (*entity.UserToda, error)
-
-	List(context.Context, *dto.UserTodaQuerier) ([]*entity.UserToda, error)
-
-	Delete(context.Context, uint) (uint, error)
-
 	ListUserToda(context.Context, *dto.ListUserTodaQuerier) ([]*vo.UserTodaVO, error)
+
+	CreateUserToda(context.Context, *entity.Toda) (*entity.Toda, error)
 
 }

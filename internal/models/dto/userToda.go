@@ -13,4 +13,5 @@ type UserTodaQuerier struct {
 
 type ListUserTodaQuerier struct {
 	TodaQuerier
+	TodaTagId *uint `json:"todaTagId" cond:"-"`
 }

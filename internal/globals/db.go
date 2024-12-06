@@ -78,3 +78,21 @@ func GetFromContext(ctx context.Context) *gorm.DB {
 	LOG.Fatal("failed to get database from context", zap.Any("value", v))
 	return nil
 }
+
+
+func Transaction[T any](trans func(*gorm.DB) (*T, error)) (*T, error) {
+	var data *T
+	err := DB.Transaction(func(tx *gorm.DB) error {
+		result, err := trans(tx)
+		if err != nil {
+			return err
+		}
+		data = result
+		return nil
+	})
+	if err != nil {
+		LOG.Error("exec transaction error: ", zap.Error(err))
+		return nil, err
+	}
+	return data, nil
+}

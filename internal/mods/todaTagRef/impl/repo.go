@@ -63,8 +63,26 @@ func (s *TodaTagRefRepo) Delete(id uint) (uint, error) {
 	return id, nil
 }
 
-func (s *TodaTagRefRepo) ListTodaTagByTodaIds(ids []uint) ([]*vo.TodaTagVO, error) {
-	var list []*vo.TodaTagVO
+func (s *TodaTagRefRepo) ListTodaTagByTodaIds(ids []uint) ([]*vo.TodaTagRefVO, error) {
+	var list []*vo.TodaTagRefVO
+	sqlStr := `
+SELECT
+	tt.*,
+	ttr.id as toda_tag_ref_id,
+	ttr.toda_id
+FROM
+	t_toda_tag_ref as ttr
+INNER JOIN
+	t_toda_tag as tt ON tt.id = ttr.toda_tag_id
+WHERE
+	ttr.toda_id IN (?)
+	AND tt.deleted_at IS NULL
+	AND ttr.deleted_at IS NULL
+	`
+	sql := s.tx.Raw(sqlStr, ids)
+	if err := sql.Find(&list).Error; err != nil {
+		return nil, err
+	}
 	return list, nil
 }
 

@@ -75,13 +75,23 @@ func (s *UserTodaRepo) DeleteByTodaId(todaId uint) error {
 	return nil
 }
 
+// TODO use template to refine sql builder
 func (s *UserTodaRepo) ListUserToda(querier *dto.ListUserTodaQuerier) ([]*vo.UserTodaVO, error) {
 	var list []*vo.UserTodaVO
 	cond, args := common.QuerierToSqlCondition(nil, querier, "t")
 	if cond == "" {
 		cond = "1 = 1"
 	}
-
+	joinTodaTag := ""
+	todaTagCond := ""
+	if querier.TodaTagId != nil {
+		(*args)["todaTagId"] = querier.TodaTagId
+		joinTodaTag = `
+			INNER JOIN
+				t_toda_tag as tt ON t.id = tt.toda_id
+		`
+		todaTagCond = " AND tt.toda_tag_id = @todaTagId AND tt.deleted_at IS NULL "
+	}
 	sqlStr := fmt.Sprintf(`
 SELECT 
 	t.*,
@@ -91,12 +101,14 @@ FROM
 	t_user_toda as ut
 INNER JOIN
 	t_toda as t ON ut.toda_id = t.id
+%s
 WHERE
 	ut.user_id = @userId
 	AND %s
 	AND t.deleted_at IS NULL
 	AND ut.deleted_at IS NULL
-`, cond)
+	%s
+`, joinTodaTag, cond, todaTagCond)
 	(*args)["userId"] = querier.UserId
 	sql := s.tx.Raw(sqlStr, args)
 	sql = common.Paginate(sql, &querier.Pager)

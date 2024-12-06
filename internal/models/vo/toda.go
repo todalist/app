@@ -6,5 +6,5 @@ import (
 
 type TodaVO struct {
 	entity.Toda
-	Tags []*TodaTagVO `json:"tags"`
+	Tags []*TodaTagRefVO `json:"tags"`
 }

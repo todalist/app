@@ -1,8 +1,8 @@
 package common
 
-func ToFieldMap[T any, K comparable](list []*T, keyFunc func(*T) K) map[K]*T {
+func ToFieldMap[T any, K comparable](list *[]*T, keyFunc func(*T) K) map[K]*T {
 	result := make(map[K]*T)
-	for _, v := range list {
+	for _, v := range *list {
 		result[keyFunc(v)] = v
 	}
 	return result
