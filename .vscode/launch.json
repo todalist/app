@@ -12,7 +12,7 @@
             "program": "${workspaceFolder}/internal/gen/gen.go",
             "env": {
                 "TEMPLATE_CONFIG_PATH": "internal/gen/gen.yaml",
-                "GEN_CODE_BASE_PATH": "internal/mods"
+                "GEN_CODE_BASE_PATH": "internal"
             },
             "cwd": "${workspaceFolder}"
         },

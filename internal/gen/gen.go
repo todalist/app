@@ -78,7 +78,7 @@ func genAllModules(basePath string, models *[]*ModelStruct) {
 
 func genModule(basePath string, model *ModelStruct) {
 	// check directory is exists
-	modulePath := filepath.Join(basePath, model.Name)
+	modulePath := filepath.Join(basePath, "mods", model.Name)
 
 	if f, err := os.Stat(modulePath); err == nil && f.IsDir() {
 		if !model.Rewrite {
