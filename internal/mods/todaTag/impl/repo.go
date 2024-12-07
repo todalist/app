@@ -83,6 +83,20 @@ func (s *TodaTagRepo) ListUserTodaTag(querier *dto.ListUserTodaTagQuerier) ([]*v
 	return list, nil
 }
 
+func (s *TodaTagRepo) ListTodaTagByTodaIds(ids []uint) ([]*vo.TodaTagRefVO, error) {
+	var list []*vo.TodaTagRefVO
+	sql := s.tx.Table("t_toda_tag as tt").
+		Select("tt.*","ttr.id as toda_tag_ref_id",  "ttr.toda_id").
+		InnerJoins(
+			"INNER JOIN t_toda_tag_ref as ttr ON tt.id=ttr.toda_tag_id",
+		).
+		Where("ttr.toda_id in (?)", ids)
+	if err := sql.Find(&list).Error; err != nil {
+		return nil, err
+	}
+	return list, nil
+}
+
 func NewTodaTagRepo(tx *gorm.DB) todaTag.ITodaTagRepo {
 	return &TodaTagRepo{
 		tx: tx,

@@ -5,6 +5,6 @@ import (
 )
 
 type TodaVO struct {
-	entity.Toda
-	Tags []*TodaTagRefVO `json:"tags"`
+	entity.Toda `gorm:"embedded"`
+	Tags []*TodaTagRefVO `json:"tags" gorm:"-"`
 }

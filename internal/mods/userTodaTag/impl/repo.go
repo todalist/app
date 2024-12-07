@@ -4,7 +4,6 @@ import (
 	"github.com/todalist/app/internal/common"
 	"github.com/todalist/app/internal/models/dto"
 	"github.com/todalist/app/internal/models/entity"
-	"github.com/todalist/app/internal/models/vo"
 	"github.com/todalist/app/internal/mods/userTodaTag"
 	"gorm.io/gorm"
 )
@@ -53,35 +52,6 @@ func (s *UserTodaTagRepo) Save(form *entity.UserTodaTag) (*entity.UserTodaTag, e
 func (s *UserTodaTagRepo) List(querier *dto.UserTodaTagQuerier) ([]*entity.UserTodaTag, error) {
 	var list []*entity.UserTodaTag
 	sql := s.tx.Where(querier)
-	sql = common.Paginate(sql, &querier.Pager)
-	if err := sql.Find(&list).Error; err != nil {
-		return nil, err
-	}
-	return list, nil
-}
-
-func (s *UserTodaTagRepo) ListUserTodaTag(querier *dto.ListUserTodaTagQuerier) ([]*vo.UserTodaTagVO, error) {
-	var list []*vo.UserTodaTagVO
-	// cond, args := common.QuerierToSqlCondition(nil, querier)
-	// (*args)["userId"] = querier.UserId
-	sql := s.tx.Table("t_user_toda_tag as utt").
-		InnerJoins("t_toda_tag as tt on utt.toda_tag_id = tt.id", s.tx.Where(querier.TodaTagQuerier)).
-		Where("user_id = ?", querier.UserId)
-		// 	sqlStr := fmt.Sprintf(`
-		// SELECT
-		// 	tt.*
-		// FROM
-		// 	t_user_toda_tag as utt
-		// INNER JOIN
-		// 	t_toda_tag as tt ON utt.toda_tag_id = tt.id
-		// WHERE
-		// 	utt.user_id = @userId
-		// 	AND %s
-		// 	AND
-		// 		tt.deleted_at IS NULL
-		// 		utt.deleted_at IS NULL
-		// 	`, cond)
-		// 	sql := s.tx.Raw(sqlStr, args)
 	sql = common.Paginate(sql, &querier.Pager)
 	if err := sql.Find(&list).Error; err != nil {
 		return nil, err

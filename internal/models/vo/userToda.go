@@ -1,7 +1,7 @@
 package vo
 
 type UserTodaVO struct {
-	Toda       TodaVO `json:"toda"`
+	TodaVO `gorm:"embedded"`
 	UserTodaId uint   `json:"id"`
 	UserId     uint   `json:"userId"`
 }

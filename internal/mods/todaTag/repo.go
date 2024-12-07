@@ -19,6 +19,8 @@ type ITodaTagRepo interface {
 
 	ListUserTodaTag(*dto.ListUserTodaTagQuerier) ([]*vo.UserTodaTagVO, error)
 
+	ListTodaTagByTodaIds(ids []uint) ([]*vo.TodaTagRefVO, error)
+
 	Delete(uint) (uint, error)
 
 }

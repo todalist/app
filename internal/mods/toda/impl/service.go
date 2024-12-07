@@ -88,12 +88,11 @@ func (s *TodaService) Delete(ctx context.Context, id uint) (uint, error) {
 	return todaRepo.Delete(id)
 }
 
-
 func (s *TodaService) List(ctx context.Context, querier *dto.ListUserTodaQuerier) ([]*vo.UserTodaVO, error) {
-	userTodaRepo := s.repo.GetUserTodaRepo(ctx)
+	todaRepo := s.repo.GetTodaRepo(ctx)
 	tokenUser := globals.MustGetTokenUserFromContext(ctx)
 	querier.UserId = &tokenUser.UserId
-	list, err := userTodaRepo.ListUserToda(querier)
+	list, err := todaRepo.ListUserToda(querier)
 	if err != nil {
 		return nil, err
 	}
@@ -105,12 +104,12 @@ func (s *TodaService) List(ctx context.Context, querier *dto.ListUserTodaQuerier
 
 func (s *TodaService) fillTodaVO(ctx context.Context, list *[]*vo.UserTodaVO) error {
 
-	todaTagRefRepo := s.repo.GetTodaTagRefRepo(ctx)
+	todaTagRepo := s.repo.GetTodaTagRepo(ctx)
 	todaMap := common.ToFieldMap(list, func(t *vo.UserTodaVO) uint {
 		return t.Toda.Id
 	})
 	todaIds := lo.Keys(todaMap)
-	todaTagVOs, err := todaTagRefRepo.ListTodaTagByTodaIds(todaIds)
+	todaTagVOs, err := todaTagRepo.ListTodaTagByTodaIds(todaIds)
 	if err != nil {
 		globals.LOG.Error("todaToVO error", zap.Error(err))
 		return err
@@ -118,7 +117,7 @@ func (s *TodaService) fillTodaVO(ctx context.Context, list *[]*vo.UserTodaVO) er
 	for _, vo := range todaTagVOs {
 		t, ok := todaMap[vo.TodaId]
 		if ok {
-			t.Toda.Tags = append(t.Toda.Tags, vo)
+			t.Tags = append(t.Tags, vo)
 		}
 	}
 	return nil

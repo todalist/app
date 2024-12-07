@@ -3,7 +3,6 @@ package userToda
 import (
 	"github.com/todalist/app/internal/models/dto"
 	"github.com/todalist/app/internal/models/entity"
-	"github.com/todalist/app/internal/models/vo"
 )
 
 type IUserTodaRepo interface {
@@ -21,5 +20,4 @@ type IUserTodaRepo interface {
 	
 	DeleteByTodaId(uint) error
 
-	ListUserToda(*dto.ListUserTodaQuerier) ([]*vo.UserTodaVO, error)
 }

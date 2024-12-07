@@ -3,7 +3,6 @@ package todaTagRef
 import (
 	"github.com/todalist/app/internal/models/dto"
 	"github.com/todalist/app/internal/models/entity"
-	"github.com/todalist/app/internal/models/vo"
 )
 
 type ITodaTagRefRepo interface {
@@ -18,7 +17,5 @@ type ITodaTagRefRepo interface {
 	List(*dto.TodaTagRefQuerier) ([]*entity.TodaTagRef, error)
 
 	Delete(uint) (uint, error)
-
-	ListTodaTagByTodaIds([]uint) ([]*vo.TodaTagRefVO, error)
 
 }
