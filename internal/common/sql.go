@@ -44,6 +44,16 @@ func QuerierToSqlCondition(argMap *map[string]interface{}, querier interface{}, 
 				}
 				// value = value.Elem()
 			}
+			if value.Kind() == reflect.Struct {
+				subCond, _ := QuerierToSqlCondition(argMap, value.Addr().Interface(), tableNameStr)
+				if subCond != "" {
+					if !firstField {
+						cond += " AND "
+					}
+					cond += subCond
+				}
+				continue
+			}
 			if !value.IsZero() {
 				if !firstField {
 					cond += " AND "

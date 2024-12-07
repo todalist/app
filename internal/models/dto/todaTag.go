@@ -5,9 +5,9 @@ import (
 )
 
 type TodaTagQuerier struct {
-	common.Pager
-	Id          *uint   `json:"id"`
-	Name        *string `json:"name"`
-	AccentColor *string `json:"accentColor"`
-	OwnerUserId *uint   `json:"userId"`
+	common.Pager 
+	Id           *uint   `json:"id"`
+	Name         *string `json:"name"`
+	AccentColor  *string `json:"accentColor"`
+	OwnerUserId  *uint   `json:"userId"`
 }

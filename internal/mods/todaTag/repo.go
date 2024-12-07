@@ -3,6 +3,7 @@ package todaTag
 import (
 	"github.com/todalist/app/internal/models/dto"
 	"github.com/todalist/app/internal/models/entity"
+	"github.com/todalist/app/internal/models/vo"
 )
 
 type ITodaTagRepo interface {
@@ -15,6 +16,8 @@ type ITodaTagRepo interface {
 	Save(*entity.TodaTag) (*entity.TodaTag, error)
 
 	List(*dto.TodaTagQuerier) ([]*entity.TodaTag, error)
+
+	ListUserTodaTag(*dto.ListUserTodaTagQuerier) ([]*vo.UserTodaTagVO, error)
 
 	Delete(uint) (uint, error)
 

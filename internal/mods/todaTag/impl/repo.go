@@ -4,6 +4,7 @@ import (
 	"github.com/todalist/app/internal/common"
 	"github.com/todalist/app/internal/models/dto"
 	"github.com/todalist/app/internal/models/entity"
+	"github.com/todalist/app/internal/models/vo"
 	"github.com/todalist/app/internal/mods/todaTag"
 	"gorm.io/gorm"
 )
@@ -62,6 +63,24 @@ func (s *TodaTagRepo) Delete(id uint) (uint, error) {
 		return 0, err
 	}
 	return id, nil
+}
+
+func (s *TodaTagRepo) ListUserTodaTag(querier *dto.ListUserTodaTagQuerier) ([]*vo.UserTodaTagVO, error) {
+	var list []*vo.UserTodaTagVO
+	sql := s.
+		tx.
+		Table("t_toda_tag as tt").
+		Select("tt.*", "utt.id as user_toda_tag_id", "utt.user_id").
+		InnerJoins(
+			"INNER JOIN t_user_toda_tag as utt ON utt.toda_tag_id=tt.id",
+		).
+		Where("utt.user_id = ?", querier.UserId).
+		Where(querier.TodaTagQuerier)
+	sql = common.Paginate(sql, &querier.Pager)
+	if err := sql.Find(&list).Error; err != nil {
+		return nil, err
+	}
+	return list, nil
 }
 
 func NewTodaTagRepo(tx *gorm.DB) todaTag.ITodaTagRepo {

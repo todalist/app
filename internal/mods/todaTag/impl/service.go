@@ -66,10 +66,10 @@ func (s *TodaTagService) Save(ctx context.Context, form *entity.TodaTag) (*entit
 }
 
 func (s *TodaTagService) List(ctx context.Context, querier *dto.ListUserTodaTagQuerier) ([]*vo.UserTodaTagVO, error) {
-	userTodaTagRepo := s.repo.GetUserTodaTagRepo(ctx)
+	todaTagRepo := s.repo.GetTodaTagRepo(ctx)
 	tokenUser := globals.MustGetTokenUserFromContext(ctx)
 	querier.UserId = &tokenUser.UserId
-	return userTodaTagRepo.ListUserTodaTag(querier)
+	return todaTagRepo.ListUserTodaTag(querier)
 }
 
 func (s *TodaTagService) Delete(ctx context.Context, id uint) (uint, error) {

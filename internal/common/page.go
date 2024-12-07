@@ -11,8 +11,8 @@ const (
 )
 
 type Pager struct {
-	PageNum  int `json:"pageNum" cond:"-"`
-	PageSize int `json:"pageSize" cond:"-"`
+	PageNum  int `json:"pageNum" gorm:"-"`
+	PageSize int `json:"pageSize" gorm:"-"`
 }
 
 func CalcPageOffset(pager *Pager) (offset int) {

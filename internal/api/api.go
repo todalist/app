@@ -19,7 +19,7 @@ func (c ApiResult) Or(data any, err error) error {
 		if errors.Is(err, &fiber.Error{}) {
 			return c.Status(err.(*fiber.Error).Code).JSON(err400(err.Error()))
 		}
-		globals.LOG.Error("uncatched error", zap.String("error", err.Error()))
+		globals.LOG.Error("uncatched error", zap.Error(err))
 		// mask error message for security
 		return c.Status(fiber.StatusInternalServerError).JSON(err500())
 	}
