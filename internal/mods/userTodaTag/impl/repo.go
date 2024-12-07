@@ -82,7 +82,7 @@ WHERE
 	`, cond)
 	sql := s.tx.Raw(sqlStr, args)
 	sql = common.Paginate(sql, &querier.Pager)
-	if err := sql.Find(&list).Error; err!= nil {
+	if err := sql.Find(&list).Error; err != nil {
 		return nil, err
 	}
 	return list, nil

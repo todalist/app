@@ -3,11 +3,12 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"github.com/goccy/go-yaml"
 	"os"
 	"path/filepath"
 	"strings"
 	"text/template"
+
+	"github.com/goccy/go-yaml"
 )
 
 type GenConfig struct {
@@ -234,7 +235,7 @@ func (r *{{ .Uname }}RouteImpl) Get(c fiber.Ctx) error {
 	if querier.Id < 1 {
 		return fiber.ErrBadRequest
 	}
-	return c.JSON(common.Or(r.{{ .Name }}Service.Get(context.Background(), querier.Id)))
+	return api.Result(c).Or(r.{{ .Name }}Service.Get(context.Background(), querier.Id)))
 }
 
 func (r *{{ .Uname }}RouteImpl) First(c fiber.Ctx) error {
@@ -243,7 +244,7 @@ func (r *{{ .Uname }}RouteImpl) First(c fiber.Ctx) error {
 		globals.LOG.Error("{{ .Name }} first bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
 	}
-	return c.JSON(common.Or(r.{{ .Name }}Service.First(context.Background(), &querier)))
+	return api.Result(c).Or(r.{{ .Name }}Service.First(context.Background(), &querier)))
 }
 
 func (r *{{ .Uname }}RouteImpl) Save(c fiber.Ctx) error {
@@ -265,7 +266,7 @@ func (r *{{ .Uname }}RouteImpl) Save(c fiber.Ctx) error {
 		globals.LOG.Error("exec transaction error: ", zap.Error(err))
 		return fiber.ErrInternalServerError
 	}
-	return c.JSON(common.Ok(result))
+	return c.JSON(api.Ok(result))
 }
 
 func (r *{{ .Uname }}RouteImpl) List(c fiber.Ctx) error {
@@ -274,7 +275,7 @@ func (r *{{ .Uname }}RouteImpl) List(c fiber.Ctx) error {
 		globals.LOG.Error("{{ .Name }} list bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
 	}
-	return c.JSON(common.Or(r.{{ .Name }}Service.List(context.Background(), &querier)))
+	return api.Result(c).Or(r.{{ .Name }}Service.List(context.Background(), &querier)))
 }
 
 func (r *{{ .Uname }}RouteImpl) Delete(c fiber.Ctx) error {
@@ -296,7 +297,7 @@ func (r *{{ .Uname }}RouteImpl) Delete(c fiber.Ctx) error {
 		globals.LOG.Error("exec transaction error: ", zap.Error(err))
 		return fiber.ErrInternalServerError
 	}
-	return c.JSON(common.Ok(result))
+	return c.JSON(api.Ok(result))
 }
 
 func (r *{{ .Uname }}RouteImpl) Register(root fiber.Router) {

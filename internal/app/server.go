@@ -1,14 +1,13 @@
 package app
 
 import (
-	"errors"
-
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/cors"
 	fiberLoggerM "github.com/gofiber/fiber/v3/middleware/logger"
 	"github.com/gofiber/fiber/v3/middleware/recover"
 	"github.com/gofiber/fiber/v3/middleware/requestid"
+	"github.com/todalist/app/internal/api"
 	"github.com/todalist/app/internal/common"
 	"github.com/todalist/app/internal/globals"
 	"github.com/todalist/app/internal/middlewares"
@@ -19,17 +18,7 @@ func NewServer(conf *globals.AppConfig) *fiber.App {
 	app := fiber.New(fiber.Config{
 		Immutable: true,
 		ErrorHandler: func(c fiber.Ctx, err error) error {
-			// Retrieve the custom status code if it's a *fiber.Error
-			var e *fiber.Error
-			if errors.As(err, &e) {
-				return c.Status(e.Code).JSON(common.ApiResponse{Message: e.Message, Code: e.Code})
-			}
-			var apiE *common.ApiResponse
-			if errors.As(err, &apiE) {
-				return c.Status(apiE.Code).JSON(common.ApiResponse{Message: apiE.Message, Code: apiE.Code})
-			}
-			return c.Status(fiber.StatusInternalServerError).
-				JSON(common.ApiResponse{Message: fiber.ErrInternalServerError.Message, Code: fiber.ErrInternalServerError.Code})
+			return api.Result(c).Or(nil, err)
 		},
 		StructValidator: &common.StructValidator{V: validator.New()},
 	})

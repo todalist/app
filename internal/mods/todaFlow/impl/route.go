@@ -2,8 +2,8 @@ package todaFlowImpl
 
 import (
 	"context"
-
 	"github.com/gofiber/fiber/v3"
+	"github.com/todalist/app/internal/api"
 	"github.com/todalist/app/internal/common"
 	"github.com/todalist/app/internal/globals"
 	"github.com/todalist/app/internal/models/dto"
@@ -26,7 +26,7 @@ func (r *TodaFlowRouteImpl) Get(c fiber.Ctx) error {
 	if querier.Id < 1 {
 		return fiber.ErrBadRequest
 	}
-	return c.JSON(common.Or(r.todaFlowService.Get(context.Background(), querier.Id)))
+	return api.Result(c).Or(r.todaFlowService.Get(context.Background(), querier.Id))
 }
 
 func (r *TodaFlowRouteImpl) First(c fiber.Ctx) error {
@@ -35,7 +35,7 @@ func (r *TodaFlowRouteImpl) First(c fiber.Ctx) error {
 		globals.LOG.Error("todaFlow first bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
 	}
-	return c.JSON(common.Or(r.todaFlowService.First(context.Background(), &querier)))
+	return api.Result(c).Or(r.todaFlowService.First(context.Background(), &querier))
 }
 
 func (r *TodaFlowRouteImpl) Save(c fiber.Ctx) error {
@@ -57,7 +57,7 @@ func (r *TodaFlowRouteImpl) Save(c fiber.Ctx) error {
 		globals.LOG.Error("exec transaction error: ", zap.Error(err))
 		return fiber.ErrInternalServerError
 	}
-	return c.JSON(common.Ok(result))
+	return api.Result(c).Ok(result)
 }
 
 func (r *TodaFlowRouteImpl) List(c fiber.Ctx) error {
@@ -66,7 +66,7 @@ func (r *TodaFlowRouteImpl) List(c fiber.Ctx) error {
 		globals.LOG.Error("todaFlow list bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
 	}
-	return c.JSON(common.Or(r.todaFlowService.List(context.Background(), &querier)))
+	return api.Result(c).Or(r.todaFlowService.List(context.Background(), &querier))
 }
 
 func (r *TodaFlowRouteImpl) Delete(c fiber.Ctx) error {
@@ -88,7 +88,7 @@ func (r *TodaFlowRouteImpl) Delete(c fiber.Ctx) error {
 		globals.LOG.Error("exec transaction error: ", zap.Error(err))
 		return fiber.ErrInternalServerError
 	}
-	return c.JSON(common.Ok(result))
+	return api.Result(c).Ok(result)
 }
 
 func (r *TodaFlowRouteImpl) Register(root fiber.Router) {

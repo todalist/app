@@ -3,7 +3,6 @@ package globals
 import (
 	"log"
 	"os"
-
 	"github.com/goccy/go-yaml"
 	"github.com/todalist/app/internal/common"
 	"go.uber.org/zap"

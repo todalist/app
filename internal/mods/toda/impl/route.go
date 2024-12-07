@@ -3,6 +3,7 @@ package todaImpl
 import (
 	"context"
 	"github.com/gofiber/fiber/v3"
+	"github.com/todalist/app/internal/api"
 	"github.com/todalist/app/internal/common"
 	"github.com/todalist/app/internal/globals"
 	"github.com/todalist/app/internal/models/dto"
@@ -25,7 +26,7 @@ func (r *TodaRouteImpl) Get(c fiber.Ctx) error {
 	if querier.Id < 1 {
 		return fiber.ErrBadRequest
 	}
-	return c.JSON(common.Or(r.todaService.Get(context.Background(), querier.Id)))
+	return api.Result(c).Or(r.todaService.Get(context.Background(), querier.Id))
 }
 
 func (r *TodaRouteImpl) Save(c fiber.Ctx) error {
@@ -47,7 +48,7 @@ func (r *TodaRouteImpl) Save(c fiber.Ctx) error {
 		globals.LOG.Error("exec transaction error: ", zap.Error(err))
 		return fiber.ErrInternalServerError
 	}
-	return c.JSON(common.Ok(result))
+	return api.Result(c).Ok(result)
 }
 
 func (r *TodaRouteImpl) Delete(c fiber.Ctx) error {
@@ -72,7 +73,7 @@ func (r *TodaRouteImpl) Delete(c fiber.Ctx) error {
 		globals.LOG.Error("exec transaction error: ", zap.Error(err))
 		return fiber.ErrInternalServerError
 	}
-	return c.JSON(common.Ok(result))
+	return api.Result(c).Ok(result)
 }
 
 func (r *TodaRouteImpl) List(c fiber.Ctx) error {
@@ -81,7 +82,7 @@ func (r *TodaRouteImpl) List(c fiber.Ctx) error {
 		globals.LOG.Error("toda list bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
 	}
-	return c.JSON(common.Or(r.todaService.List(globals.MustGetTokenUserContext(c), &querier)))
+	return api.Result(c).Or(r.todaService.List(globals.MustGetTokenUserContext(c), &querier))
 }
 
 func (r *TodaRouteImpl) Register(root fiber.Router) {

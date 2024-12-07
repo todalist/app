@@ -2,7 +2,7 @@ package app
 
 import (
 	"github.com/gofiber/fiber/v3"
-	"github.com/todalist/app/internal"
+	"github.com/todalist/app/internal/mods"
 	sysImpl "github.com/todalist/app/internal/mods/sys/impl"
 	todaImpl "github.com/todalist/app/internal/mods/toda/impl"
 	todaFlowImpl "github.com/todalist/app/internal/mods/todaFlow/impl"
@@ -27,7 +27,7 @@ func instanceInitNow(app fiber.Router) {
 	todaFlowRoute := todaFlowImpl.NewTodaFlowRoute(todaFlowService)
 	todaTagRoute := todaTagImpl.NewTodaTagRoute(todaTagService)
 
-	registerRoutes(app, []internal.IRoute{
+	registerRoutes(app, []mods.IRoute{
 		sysRoute,
 		userRoute,
 		todaRoute,
@@ -36,7 +36,7 @@ func instanceInitNow(app fiber.Router) {
 	})
 }
 
-func registerRoutes(app fiber.Router, routes []internal.IRoute) {
+func registerRoutes(app fiber.Router, routes []mods.IRoute) {
 	for _, route := range routes {
 		route.Register(app)
 	}

@@ -1,4 +1,4 @@
-package internal
+package mods
 
 import "github.com/gofiber/fiber/v3"
 

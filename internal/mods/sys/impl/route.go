@@ -3,7 +3,7 @@ package sysImpl
 import (
 	"context"
 	"github.com/gofiber/fiber/v3"
-	"github.com/todalist/app/internal/common"
+	"github.com/todalist/app/internal/api"
 	"github.com/todalist/app/internal/globals"
 	"github.com/todalist/app/internal/models/dto"
 	"github.com/todalist/app/internal/mods/sys"
@@ -21,9 +21,9 @@ func (r *SysRouteImpl) PasswordLogin(c fiber.Ctx) error {
 		globals.LOG.Error("password login bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
 	}
-	return c.JSON(common.Or(globals.Transaction(func(tx *gorm.DB) (*string, error) {
+	return api.Result(c).Or(globals.Transaction(func(tx *gorm.DB) (*string, error) {
 		return r.sysService.PasswordLogin(globals.ContextDB(context.Background(), tx), &form)
-	})))
+	}))
 }
 
 func (r *SysRouteImpl) Register(root fiber.Router) {
