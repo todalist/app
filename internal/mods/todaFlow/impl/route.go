@@ -2,6 +2,7 @@ package todaFlowImpl
 
 import (
 	"context"
+
 	"github.com/gofiber/fiber/v3"
 	"github.com/todalist/app/internal/api"
 	"github.com/todalist/app/internal/common"
@@ -46,7 +47,7 @@ func (r *TodaFlowRouteImpl) Save(c fiber.Ctx) error {
 	}
 	var result *entity.TodaFlow
 	err := globals.DB.Transaction(func(tx *gorm.DB) error {
-		save, err := r.todaFlowService.Save(globals.ContextDB(context.Background(), tx), &form)
+		save, err := r.todaFlowService.Save(globals.DbCtx(context.Background(), tx), &form)
 		if err != nil {
 			return err
 		}
@@ -77,7 +78,7 @@ func (r *TodaFlowRouteImpl) Delete(c fiber.Ctx) error {
 	}
 	var result uint
 	err := globals.DB.Transaction(func(tx *gorm.DB) error {
-		id, err := r.todaFlowService.Delete(globals.ContextDB(context.Background(), tx), querier.Id)
+		id, err := r.todaFlowService.Delete(globals.DbCtx(context.Background(), tx), querier.Id)
 		if err != nil {
 			return err
 		}

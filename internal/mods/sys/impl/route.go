@@ -2,6 +2,7 @@ package sysImpl
 
 import (
 	"context"
+
 	"github.com/gofiber/fiber/v3"
 	"github.com/todalist/app/internal/api"
 	"github.com/todalist/app/internal/globals"
@@ -22,7 +23,7 @@ func (r *SysRouteImpl) PasswordLogin(c fiber.Ctx) error {
 		return fiber.ErrBadRequest
 	}
 	return api.Result(c).Or(globals.Transaction(func(tx *gorm.DB) (*string, error) {
-		return r.sysService.PasswordLogin(globals.ContextDB(context.Background(), tx), &form)
+		return r.sysService.PasswordLogin(globals.DbCtx(context.Background(), tx), &form)
 	}))
 }
 

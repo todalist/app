@@ -55,7 +55,7 @@ func InitDatabase() {
 
 type ContextDBKey struct{}
 
-func ContextDB(ctx context.Context, tx *gorm.DB) context.Context {
+func DbCtx(ctx context.Context, tx *gorm.DB) context.Context {
 	v := ctx.Value(ContextDBKey{})
 	if v == nil {
 		if tx == nil {
@@ -66,7 +66,7 @@ func ContextDB(ctx context.Context, tx *gorm.DB) context.Context {
 	return ctx
 }
 
-func GetFromContext(ctx context.Context) *gorm.DB {
+func DbFromCtx(ctx context.Context) *gorm.DB {
 	v := ctx.Value(ContextDBKey{})
 	if v == nil {
 		return DB

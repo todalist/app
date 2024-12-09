@@ -255,7 +255,7 @@ func (r *{{ .Uname }}RouteImpl) Save(c fiber.Ctx) error {
 	}	
 	var result *entity.{{ .Uname }}
 	err := globals.DB.Transaction(func(tx *gorm.DB) error {
-		save, err := r.{{ .Name }}Service.Save(globals.ContextDB(context.Background(), tx), &form)
+		save, err := r.{{ .Name }}Service.Save(globals.DbCtx(context.Background(), tx), &form)
 		if err != nil {
 			return err
 		}
@@ -286,7 +286,7 @@ func (r *{{ .Uname }}RouteImpl) Delete(c fiber.Ctx) error {
 	}
 	var result uint
 	err := globals.DB.Transaction(func(tx *gorm.DB) error {
-		id, err := r.{{ .Name }}Service.Delete(globals.ContextDB(context.Background(), tx), querier.Id)
+		id, err := r.{{ .Name }}Service.Delete(globals.DbCtx(context.Background(), tx), querier.Id)
 		if err != nil {
 			return err
 		}

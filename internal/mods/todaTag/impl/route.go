@@ -2,6 +2,7 @@ package todaTagImpl
 
 import (
 	"context"
+
 	"github.com/gofiber/fiber/v3"
 	"github.com/todalist/app/internal/api"
 	"github.com/todalist/app/internal/common"
@@ -46,7 +47,7 @@ func (r *TodaTagRouteImpl) Save(c fiber.Ctx) error {
 	}
 	var result *entity.TodaTag
 	err := globals.DB.Transaction(func(tx *gorm.DB) error {
-		save, err := r.todaTagService.Save(globals.ContextDB(globals.MustGetTokenUserContext(c), tx), &form)
+		save, err := r.todaTagService.Save(globals.DbCtx(globals.MustTokenUserCtx(c), tx), &form)
 		if err != nil {
 			return err
 		}
@@ -68,7 +69,7 @@ func (r *TodaTagRouteImpl) List(c fiber.Ctx) error {
 	}
 	return api.
 		Result(c).
-		Or(r.todaTagService.List(globals.MustGetTokenUserContext(c), &querier))
+		Or(r.todaTagService.List(globals.MustTokenUserCtx(c), &querier))
 }
 
 func (r *TodaTagRouteImpl) Delete(c fiber.Ctx) error {
@@ -79,7 +80,7 @@ func (r *TodaTagRouteImpl) Delete(c fiber.Ctx) error {
 	}
 	var result uint
 	err := globals.DB.Transaction(func(tx *gorm.DB) error {
-		id, err := r.todaTagService.Delete(globals.ContextDB(globals.MustGetTokenUserContext(c), tx), querier.Id)
+		id, err := r.todaTagService.Delete(globals.DbCtx(globals.MustTokenUserCtx(c), tx), querier.Id)
 		if err != nil {
 			return err
 		}

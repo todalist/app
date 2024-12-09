@@ -3,7 +3,6 @@ package globals
 import (
 	"context"
 	"errors"
-
 	"github.com/gofiber/fiber/v3"
 	"github.com/golang-jwt/jwt/v5"
 	"go.uber.org/zap"
@@ -32,7 +31,7 @@ func GetTokenUser(c fiber.Ctx) (*TokenUser, error) {
 	return t, nil
 }
 
-func MustGetTokenUser(c fiber.Ctx) *TokenUser {
+func MustTokenUser(c fiber.Ctx) *TokenUser {
 	t, e := GetTokenUser(c)
 	if e != nil {
 		LOG.Error("no token user found")
@@ -41,12 +40,12 @@ func MustGetTokenUser(c fiber.Ctx) *TokenUser {
 	return t
 }
 
-func MustGetTokenUserContext(c fiber.Ctx) context.Context {
-	tokenUser := MustGetTokenUser(c)
+func MustTokenUserCtx(c fiber.Ctx) context.Context {
+	tokenUser := MustTokenUser(c)
 	return context.WithValue(c.Context(), TokenUserKey{}, tokenUser)
 }
 
-func MustGetTokenUserFromContext(c context.Context) *TokenUser {
+func MustTokenUserFromCtx(c context.Context) *TokenUser {
 	v := c.Value(TokenUserKey{})
 	if v == nil {
 		LOG.Panic("no token user found from given context", zap.Any("ctx", c))

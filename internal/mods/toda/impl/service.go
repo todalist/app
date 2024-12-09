@@ -2,6 +2,7 @@ package todaImpl
 
 import (
 	"context"
+
 	"github.com/gofiber/fiber/v3"
 	"github.com/samber/lo"
 	"github.com/todalist/app/internal/common"
@@ -25,7 +26,7 @@ func (s *TodaService) Get(ctx context.Context, id uint) (*entity.Toda, error) {
 func (s *TodaService) Save(ctx context.Context, form *entity.Toda) (*entity.Toda, error) {
 	todaRepo := s.repo.GetTodaRepo(ctx)
 	userTodaRepo := s.repo.GetUserTodaRepo(ctx)
-	tokenUser := globals.MustGetTokenUserFromContext(ctx)
+	tokenUser := globals.MustTokenUserFromCtx(ctx)
 	isCreate := form.Id < 1
 	if isCreate {
 		form.OwnerUserId = tokenUser.UserId
@@ -69,7 +70,7 @@ func (s *TodaService) Save(ctx context.Context, form *entity.Toda) (*entity.Toda
 func (s *TodaService) Delete(ctx context.Context, id uint) (uint, error) {
 	todaRepo := s.repo.GetTodaRepo(ctx)
 	userTodaRepo := s.repo.GetUserTodaRepo(ctx)
-	tokenUser := globals.MustGetTokenUserFromContext(ctx)
+	tokenUser := globals.MustTokenUserFromCtx(ctx)
 	_, err := userTodaRepo.First(&dto.UserTodaQuerier{
 		UserId: &tokenUser.UserId,
 		TodaId: &id,
@@ -90,7 +91,7 @@ func (s *TodaService) Delete(ctx context.Context, id uint) (uint, error) {
 
 func (s *TodaService) List(ctx context.Context, querier *dto.ListUserTodaQuerier) ([]*vo.UserTodaVO, error) {
 	todaRepo := s.repo.GetTodaRepo(ctx)
-	tokenUser := globals.MustGetTokenUserFromContext(ctx)
+	tokenUser := globals.MustTokenUserFromCtx(ctx)
 	querier.UserId = &tokenUser.UserId
 	list, err := todaRepo.ListUserToda(querier)
 	if err != nil {
