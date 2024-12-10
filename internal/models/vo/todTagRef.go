@@ -5,7 +5,7 @@ import (
 )
 
 type TodaTagRefVO struct {
-	entity.TodaTag
+	entity.TodaTag `gorm:"embedded"`
 	TodaId       uint `json:"todaId"`
 	TodaTagRefId uint `json:"todaTagId"`
 }

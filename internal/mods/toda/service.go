@@ -12,7 +12,7 @@ type ITodaService interface {
 	// basic crud
 	Get(context.Context, uint) (*entity.Toda, error)
 
-	Save(context.Context, *entity.Toda) (*entity.Toda, error)
+	Save(context.Context, *dto.TodaSaveDTO) (*vo.UserTodaVO, error)
 
 	List(context.Context, *dto.ListUserTodaQuerier) ([]*vo.UserTodaVO, error)
 

@@ -1,8 +1,10 @@
 package dto
 
 import (
-	"github.com/todalist/app/internal/common"
 	"time"
+
+	"github.com/todalist/app/internal/common"
+	"github.com/todalist/app/internal/models/entity"
 )
 
 type TodaQuerier struct {
@@ -16,4 +18,9 @@ type TodaQuerier struct {
 	Status      *int       `json:"status"`
 	Estimate    *int       `json:"estimate"`
 	Elapsed     *int       `json:"elapsed"`
+}
+
+type TodaSaveDTO struct {
+	entity.Toda `json:"toda"`
+	Tags        []uint `json:"tags"`
 }

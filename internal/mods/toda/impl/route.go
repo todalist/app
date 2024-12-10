@@ -2,13 +2,12 @@ package todaImpl
 
 import (
 	"context"
-
 	"github.com/gofiber/fiber/v3"
 	"github.com/todalist/app/internal/api"
 	"github.com/todalist/app/internal/common"
 	"github.com/todalist/app/internal/globals"
 	"github.com/todalist/app/internal/models/dto"
-	"github.com/todalist/app/internal/models/entity"
+	"github.com/todalist/app/internal/models/vo"
 	"github.com/todalist/app/internal/mods/toda"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -31,12 +30,12 @@ func (r *TodaRouteImpl) Get(c fiber.Ctx) error {
 }
 
 func (r *TodaRouteImpl) Save(c fiber.Ctx) error {
-	var form entity.Toda
+	var form dto.TodaSaveDTO
 	if err := c.Bind().Body(&form); err != nil {
 		globals.LOG.Error("toda save bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
 	}
-	var result *entity.Toda
+	var result *vo.UserTodaVO
 	err := globals.DB.Transaction(func(tx *gorm.DB) error {
 		save, err := r.todaService.Save(globals.DbCtx(globals.MustTokenUserCtx(c), tx), &form)
 		if err != nil {

@@ -23,7 +23,7 @@ func (s *TodaService) Get(ctx context.Context, id uint) (*entity.Toda, error) {
 	return todaRepo.Get(id)
 }
 
-func (s *TodaService) Save(ctx context.Context, form *entity.Toda) (*entity.Toda, error) {
+func (s *TodaService) Save(ctx context.Context, form *dto.TodaSaveDTO) (*vo.UserTodaVO, error) {
 	todaRepo := s.repo.GetTodaRepo(ctx)
 	userTodaRepo := s.repo.GetUserTodaRepo(ctx)
 	tokenUser := globals.MustTokenUserFromCtx(ctx)
@@ -50,7 +50,7 @@ func (s *TodaService) Save(ctx context.Context, form *entity.Toda) (*entity.Toda
 		// TODO to support user config
 		form.Priority = entity.TodaPriorityLow
 	}
-	form, err := todaRepo.Save(form)
+	toda, err := todaRepo.Save(&form.Toda)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +64,13 @@ func (s *TodaService) Save(ctx context.Context, form *entity.Toda) (*entity.Toda
 			return nil, err
 		}
 	}
-	return form, nil
+	userTodaVO := &vo.UserTodaVO{
+		TodaVO: &vo.TodaVO{
+			Toda: toda,
+		},
+	}
+	s.fillTodaVO(ctx, &[]*vo.UserTodaVO{userTodaVO})
+	return userTodaVO, nil
 }
 
 func (s *TodaService) Delete(ctx context.Context, id uint) (uint, error) {
