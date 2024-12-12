@@ -42,7 +42,7 @@ func (s *UserTodaRepo) Save(form *entity.UserToda) (*entity.UserToda, error) {
 		tx.
 		Model(form).
 		Where("id = ?", form.Id).
-		Where("updated_at <=", form.UpdatedAt).
+		Where("updated_at <= ?", form.UpdatedAt).
 		Updates(form).Error; err != nil {
 		return nil, err
 	}

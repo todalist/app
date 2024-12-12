@@ -15,6 +15,7 @@ type ITodaRoute interface {
 
 	Delete(fiber.Ctx) error
 
+	FlowToda(fiber.Ctx) error
 
 	Register(fiber.Router)
 

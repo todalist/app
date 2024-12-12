@@ -39,7 +39,7 @@ func (s *TodaRepo) Save(form *entity.Toda) (*entity.Toda, error) {
 		tx.
 		Model(form).
 		Where("id = ?", form.Id).
-		Where("updated_at <=", form.UpdatedAt).Omit("elapsed").
+		Where("updated_at <= ?", form.UpdatedAt).Omit("elapsed").
 		Updates(form).Error; err != nil {
 		return nil, err
 	}

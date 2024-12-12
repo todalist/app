@@ -42,7 +42,7 @@ func (s *UserRepo) Save(form *entity.User) (*entity.User, error) {
 		tx.
 		Model(form).
 		Where("id = ?", form.Id).
-		Where("updated_at <=", form.UpdatedAt).Omit("password", "username", "email").
+		Where("updated_at <= ?", form.UpdatedAt).Omit("password", "username", "email").
 		Updates(form).Error; err != nil {
 		return nil, err
 	}

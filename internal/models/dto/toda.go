@@ -24,3 +24,8 @@ type TodaSaveDTO struct {
 	entity.Toda `json:"toda"`
 	Tags        []uint `json:"tags"`
 }
+
+type FlowTodaDTO struct {
+	TodaId uint `json:"todaId"`
+	Status int  `json:"status"`
+}

@@ -38,7 +38,7 @@ func (s *TodaTagRefRepo) Save(form *entity.TodaTagRef) (*entity.TodaTagRef, erro
 		tx.
 		Model(form).
 		Where("id = ?", form.Id).
-		Where("updated_at <=", form.UpdatedAt).
+		Where("updated_at <= ?", form.UpdatedAt).
 		Updates(form).Error; err != nil {
 		return nil, err
 	}

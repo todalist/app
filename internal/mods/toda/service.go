@@ -17,4 +17,6 @@ type ITodaService interface {
 	List(context.Context, *dto.ListUserTodaQuerier) ([]*vo.UserTodaVO, error)
 
 	Delete(context.Context, uint) (uint, error)
+
+	FlowToda(context.Context, *dto.FlowTodaDTO) (*uint, error)
 }

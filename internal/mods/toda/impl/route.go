@@ -85,12 +85,27 @@ func (r *TodaRouteImpl) List(c fiber.Ctx) error {
 	return api.Result(c).Or(r.todaService.List(globals.MustTokenUserCtx(c), &querier))
 }
 
+func (r *TodaRouteImpl) FlowToda(c fiber.Ctx) error {
+	var form dto.FlowTodaDTO
+	if err := c.Bind().Body(&form); err != nil {
+		globals.LOG.Error("toda flowToda bind error", zap.String("error", err.Error()))
+		return fiber.ErrBadRequest
+	}
+	res, err := globals.Transaction(func(tx *gorm.DB) (*uint, error) {
+		return r.
+			todaService.
+			FlowToda(globals.DbCtx(globals.MustTokenUserCtx(c), tx), &form)
+	})
+	return api.Result(c).Or(res, err)
+}
+
 func (r *TodaRouteImpl) Register(root fiber.Router) {
 	router := root.Group("/toda")
 	router.Get("/:id", r.Get)
 	router.Post("/save", r.Save)
 	router.Post("/list", r.List)
 	router.Delete("/:id", r.Delete)
+	router.Post("/flow", r.FlowToda)
 }
 
 func NewTodaRoute(todaService toda.ITodaService) toda.ITodaRoute {

@@ -455,7 +455,7 @@ func (s *{{ .Uname }}Repo) Save(form *entity.{{ .Uname }}) (*entity.{{ .Uname }}
 		tx.
 		Model(form).
 		Where("id = ?", form.Id).
-		Where("updated_at <=", form.UpdatedAt).{{ if gt (len .UpdateOmits) 0 }}Omit({{ range  $index, $omit := .UpdateOmits }}"{{ $omit }}", {{ end }}).{{ end }}
+		Where("updated_at <= ?", form.UpdatedAt).{{ if gt (len .UpdateOmits) 0 }}Omit({{ range  $index, $omit := .UpdateOmits }}"{{ $omit }}", {{ end }}).{{ end }}
 		Updates(form).Error; err != nil {
 		return nil, err
 	}

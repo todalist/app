@@ -33,17 +33,9 @@ func (s *TodaService) Save(ctx context.Context, form *dto.TodaSaveDTO) (*vo.User
 		form.Status = entity.TodaStatusTodo
 	} else {
 		// check user permission
-		_, err := userTodaRepo.First(&dto.UserTodaQuerier{
-			UserId: &tokenUser.UserId,
-			TodaId: &form.Id,
-		})
+		err := s.checkIfWritable(ctx, form.Id)
 		if err != nil {
-			globals.LOG.Warn("no permission to update toda",
-				zap.Any("user", tokenUser),
-				zap.Any("form", form),
-				zap.Error(err),
-			)
-			return nil, fiber.ErrForbidden
+			return nil, err
 		}
 	}
 	if form.Priority == 0 {
@@ -71,6 +63,26 @@ func (s *TodaService) Save(ctx context.Context, form *dto.TodaSaveDTO) (*vo.User
 	}
 	s.fillTodaVO(ctx, &[]*vo.UserTodaVO{userTodaVO})
 	return userTodaVO, nil
+}
+
+// checkIfWritable checks if the user in the context has permission to write to the specified toda (id).
+// If the user has permission, it returns nil, otherwise it returns fiber.ErrForbidden.
+func (s *TodaService) checkIfWritable(ctx context.Context, id uint) error {
+	userTodaRepo := s.repo.GetUserTodaRepo(ctx)
+	tokenUser := globals.MustTokenUserFromCtx(ctx)
+	_, err := userTodaRepo.First(&dto.UserTodaQuerier{
+		UserId: &tokenUser.UserId,
+		TodaId: &id,
+	})
+	if err != nil {
+		globals.LOG.Warn("no permission to update toda",
+			zap.Any("user", tokenUser),
+			zap.Any("id", id),
+			zap.Error(err),
+		)
+		return fiber.ErrForbidden
+	}
+	return nil
 }
 
 func (s *TodaService) Delete(ctx context.Context, id uint) (uint, error) {
@@ -128,6 +140,40 @@ func (s *TodaService) fillTodaVO(ctx context.Context, list *[]*vo.UserTodaVO) er
 		}
 	}
 	return nil
+}
+
+// FlowToda updates the status of a Toda entity and records the change in the TodaFlow entity.
+// It first verifies if the user has permission to modify the specified Toda by checking writability.
+// If writable, it creates a TodaFlow record with the previous and new status, then updates the Toda status.
+// Returns the ID of the Toda if successful, or an error if any step fails.
+func (s *TodaService) FlowToda(ctx context.Context, form *dto.FlowTodaDTO) (*uint, error) {
+	todaRepo := s.repo.GetTodaRepo(ctx)
+	todaFlowRepo := s.repo.GetTodaFlowRepo(ctx)
+	tokenUser := globals.MustTokenUserFromCtx(ctx)
+
+	toda, err := todaRepo.Get(form.TodaId)
+	if err != nil {
+		return nil, err
+	}
+	err = s.checkIfWritable(ctx, form.TodaId)
+	if err != nil {
+		return nil, err
+	}
+	todaFlow := &entity.TodaFlow{
+		TodaId: toda.Id,
+		UserId: tokenUser.UserId,
+		Prev:   toda.Status,
+		Next:   form.Status,
+	}
+	_, err = todaFlowRepo.Save(todaFlow)
+	if err != nil {
+		return nil, err
+	}
+	toda.Status = form.Status
+	if _, err := todaRepo.Save(toda); err != nil {
+		return nil, err
+	}
+	return &form.TodaId, nil
 }
 
 func NewTodaService(repo repo.IRepo) *TodaService {
