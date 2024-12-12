@@ -24,7 +24,7 @@
             "program": "${workspaceFolder}",
             "console": "internalConsole",
             "env": {
-                "APP_CONFIG_FILE": "application-dev.yaml",
+                "APP_CONFIG_FILE": "application-dev-local.yaml",
                 "APP_DEVELOPMENT": "1",
             }
         }

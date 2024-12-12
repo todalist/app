@@ -27,3 +27,5 @@ go.work.sum
 
 # env file
 .env
+
+application-dev-local.yaml
