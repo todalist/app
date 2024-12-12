@@ -2,6 +2,7 @@ package todaImpl
 
 import (
 	"context"
+	"time"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/samber/lo"
@@ -147,6 +148,7 @@ func (s *TodaService) fillTodaVO(ctx context.Context, list *[]*vo.UserTodaVO) er
 // If writable, it creates a TodaFlow record with the previous and new status, then updates the Toda status.
 // Returns the ID of the Toda if successful, or an error if any step fails.
 func (s *TodaService) FlowToda(ctx context.Context, form *dto.FlowTodaDTO) (*uint, error) {
+	now := time.Now().UTC()
 	todaRepo := s.repo.GetTodaRepo(ctx)
 	todaFlowRepo := s.repo.GetTodaFlowRepo(ctx)
 	tokenUser := globals.MustTokenUserFromCtx(ctx)
@@ -170,6 +172,9 @@ func (s *TodaService) FlowToda(ctx context.Context, form *dto.FlowTodaDTO) (*uin
 		return nil, err
 	}
 	toda.Status = form.Status
+	if form.Status == entity.TodaStatusFinished {
+		toda.CompletedAt = &now
+	}
 	if _, err := todaRepo.Save(toda); err != nil {
 		return nil, err
 	}

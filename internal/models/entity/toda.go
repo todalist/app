@@ -15,6 +15,7 @@ type Toda struct {
 	Status      int        `json:"status" `
 	Estimate    int        `json:"estimate" `
 	Elapsed     int        `json:"elapsed" `
+	CompletedAt *time.Time `json:"completedAt" `
 }
 
 const (
