@@ -7,6 +7,10 @@ import (
 )
 
 func MustMigration() {
+	if !globals.CONF.DB.AutoMigration {
+		globals.LOG.Info("auto migration skipped.")
+		return
+	}
 	if err := globals.DB.AutoMigrate(
 		&entity.User{},
 		&entity.Toda{},

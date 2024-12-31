@@ -1,11 +1,11 @@
 package globals
 
 import (
-	"log"
-	"os"
 	"github.com/goccy/go-yaml"
 	"github.com/todalist/app/internal/common"
 	"go.uber.org/zap"
+	"log"
+	"os"
 )
 
 var (
@@ -34,11 +34,12 @@ type ServerConfig struct {
 }
 
 type DBConfig struct {
-	Host     string
-	User     string
-	Password string
-	Database string
-	Port     uint16
+	Host          string
+	User          string
+	Password      string
+	Database      string
+	Port          uint16
+	AutoMigration bool `yaml:"autoMigration"`
 }
 
 type AuthenticationConfig struct {

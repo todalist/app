@@ -5,6 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "App",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}",
+            "console": "internalConsole",
+            "env": {
+                "APP_CONFIG_FILE": "application-dev-local.yaml",
+                "APP_DEVELOPMENT": "1",
+            }
+        },
+        {
             "name": "CodeGen",
             "type": "go",
             "request": "launch",
@@ -16,17 +28,5 @@
             },
             "cwd": "${workspaceFolder}"
         },
-        {
-            "name": "App",
-            "type": "go",
-            "request": "launch",
-            "mode": "auto",
-            "program": "${workspaceFolder}",
-            "console": "internalConsole",
-            "env": {
-                "APP_CONFIG_FILE": "application-dev-local.yaml",
-                "APP_DEVELOPMENT": "1",
-            }
-        }
     ]
 }

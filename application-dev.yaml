@@ -12,6 +12,7 @@ db:
   password: fyang
   database: todalist_app
   port: 5432
+  autoMigration: false
 auth:
   whiteList:
     - /api/v1/sys/authentication/passwordLogin
