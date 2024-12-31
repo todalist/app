@@ -2,7 +2,6 @@ package todaTagImpl
 
 import (
 	"context"
-
 	"github.com/gofiber/fiber/v3"
 	"github.com/todalist/app/internal/globals"
 	"github.com/todalist/app/internal/models/dto"
@@ -26,16 +25,20 @@ func (s *TodaTagService) First(ctx context.Context, querier *dto.TodaTagQuerier)
 	return todaTagRepo.First(querier)
 }
 
-func (s *TodaTagService) Save(ctx context.Context, form *entity.TodaTag) (*entity.TodaTag, error) {
+func (s *TodaTagService) Save(ctx context.Context, form *entity.TodaTag) (*vo.UserTodaTagVO, error) {
 	todaTagRepo := s.repo.GetTodaTagRepo(ctx)
 	userTodaTagRepo := s.repo.GetUserTodaTagRepo(ctx)
 	tokenUser := globals.MustTokenUserFromCtx(ctx)
 	isCreate := form.Id < 1
+	var (
+		userTodaTagId uint
+		userId        uint
+	)
 	if isCreate {
 		form.OwnerUserId = tokenUser.UserId
 	} else {
 		// check user permission
-		_, err := userTodaTagRepo.First(&dto.UserTodaTagQuerier{
+		userTodaTag, err := userTodaTagRepo.First(&dto.UserTodaTagQuerier{
 			UserId:    &tokenUser.UserId,
 			TodaTagId: &form.Id,
 		})
@@ -47,6 +50,8 @@ func (s *TodaTagService) Save(ctx context.Context, form *entity.TodaTag) (*entit
 			)
 			return nil, fiber.ErrForbidden
 		}
+		userTodaTagId = userTodaTag.Id
+		userId = userTodaTag.UserId
 	}
 	form, err := todaTagRepo.Save(form)
 	if err != nil {
@@ -54,15 +59,22 @@ func (s *TodaTagService) Save(ctx context.Context, form *entity.TodaTag) (*entit
 	}
 	if isCreate {
 		// init todaTag with user
-		_, err := userTodaTagRepo.Save(&entity.UserTodaTag{
+		userTodaTag, err := userTodaTagRepo.Save(&entity.UserTodaTag{
 			UserId:    form.OwnerUserId,
 			TodaTagId: form.Id,
 		})
 		if err != nil {
 			return nil, err
 		}
+		userTodaTagId = userTodaTag.Id
+		userId = userTodaTag.UserId
 	}
-	return form, nil
+	v := &vo.UserTodaTagVO{
+		Tag:           form,
+		UserTodaTagId: userTodaTagId,
+		UserId:        userId,
+	}
+	return v, nil
 }
 
 func (s *TodaTagService) List(ctx context.Context, querier *dto.ListUserTodaTagQuerier) ([]*vo.UserTodaTagVO, error) {
