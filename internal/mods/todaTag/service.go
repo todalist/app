@@ -15,7 +15,7 @@ type ITodaTagService interface {
 
 	First(context.Context, *dto.TodaTagQuerier) (*entity.TodaTag, error)
 
-	Save(context.Context, *entity.TodaTag) (*entity.TodaTag, error)
+	Save(context.Context, *entity.TodaTag) (*vo.UserTodaTagVO, error)
 
 	List(context.Context, *dto.ListUserTodaTagQuerier) ([]*vo.UserTodaTagVO, error)
 

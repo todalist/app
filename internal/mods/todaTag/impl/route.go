@@ -9,6 +9,7 @@ import (
 	"github.com/todalist/app/internal/globals"
 	"github.com/todalist/app/internal/models/dto"
 	"github.com/todalist/app/internal/models/entity"
+	"github.com/todalist/app/internal/models/vo"
 	"github.com/todalist/app/internal/mods/todaTag"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -45,7 +46,7 @@ func (r *TodaTagRouteImpl) Save(c fiber.Ctx) error {
 		globals.LOG.Error("todaTag save bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
 	}
-	var result *entity.TodaTag
+	var result *vo.UserTodaTagVO
 	err := globals.DB.Transaction(func(tx *gorm.DB) error {
 		save, err := r.todaTagService.Save(globals.DbCtx(globals.MustTokenUserCtx(c), tx), &form)
 		if err != nil {
