@@ -17,6 +17,8 @@ type ITodaTagRoute interface {
 
 	Delete(fiber.Ctx) error
 
+	SaveUserTodaTag(fiber.Ctx) error
+
 	Register(fiber.Router)
 
 }

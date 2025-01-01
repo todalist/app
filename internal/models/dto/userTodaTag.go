@@ -9,6 +9,7 @@ type UserTodaTagQuerier struct {
 	Id        *uint `json:"id"`
 	UserId    *uint `json:"userId"`
 	TodaTagId *uint `json:"todaTagId"`
+	PinTop    *bool `json:"pinTop"`
 }
 
 type ListUserTodaTagQuerier struct {

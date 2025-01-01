@@ -9,5 +9,4 @@ type TodaTag struct {
 	Name        string `json:"name" `
 	AccentColor string `json:"accentColor" `
 	OwnerUserId uint   `json:"userId" gorm:"index"`
-	PinTop      bool   `json:"pinTop" `
 }

@@ -8,4 +8,5 @@ type UserTodaTag struct {
 	common.BaseModel
 	UserId    uint `json:"userId" gorm:"index"`
 	TodaTagId uint `json:"todaTagId" gorm:"index"`
+	PinTop    bool `json:"pinTop" `
 }

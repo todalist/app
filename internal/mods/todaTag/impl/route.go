@@ -2,7 +2,6 @@ package todaTagImpl
 
 import (
 	"context"
-
 	"github.com/gofiber/fiber/v3"
 	"github.com/todalist/app/internal/api"
 	"github.com/todalist/app/internal/common"
@@ -41,7 +40,7 @@ func (r *TodaTagRouteImpl) First(c fiber.Ctx) error {
 }
 
 func (r *TodaTagRouteImpl) Save(c fiber.Ctx) error {
-	var form entity.TodaTag
+	var form dto.TodaTagSaveDTO
 	if err := c.Bind().Body(&form); err != nil {
 		globals.LOG.Error("todaTag save bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
@@ -95,6 +94,15 @@ func (r *TodaTagRouteImpl) Delete(c fiber.Ctx) error {
 	return api.Result(c).Ok(result)
 }
 
+func (r *TodaTagRouteImpl) SaveUserTodaTag(c fiber.Ctx) error {
+	var form entity.UserTodaTag
+	if err := c.Bind().Body(&form); err != nil {
+		globals.LOG.Error("userTodaTag save bind error", zap.String("error", err.Error()))
+		return fiber.ErrBadRequest
+	}
+	return api.Result(c).Or(r.todaTagService.SaveUserTodaTag(globals.MustTokenUserCtx(c), &form))
+}
+
 func (r *TodaTagRouteImpl) Register(root fiber.Router) {
 	router := root.Group("/todaTag")
 	router.Get("/:id", r.Get)
@@ -102,6 +110,7 @@ func (r *TodaTagRouteImpl) Register(root fiber.Router) {
 	router.Post("/list", r.List)
 	router.Delete("/:id", r.Delete)
 	router.Post("/first", r.First)
+	router.Post("/saveUserTodaTag", r.SaveUserTodaTag)
 }
 
 func NewTodaTagRoute(todaTagService todaTag.ITodaTagService) todaTag.ITodaTagRoute {

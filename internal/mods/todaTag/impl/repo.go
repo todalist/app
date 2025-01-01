@@ -76,6 +76,9 @@ func (s *TodaTagRepo) ListUserTodaTag(querier *dto.ListUserTodaTagQuerier) ([]*v
 		).
 		Where("utt.user_id = ?", querier.UserId).
 		Where(querier.TodaTagQuerier)
+	if querier.PinTop != nil {
+		sql = sql.Where("utt.pin_top = ?", querier.PinTop)
+	}
 	sql = common.Paginate(sql, &querier.Pager)
 	if err := sql.Find(&list).Error; err != nil {
 		return nil, err
@@ -86,7 +89,7 @@ func (s *TodaTagRepo) ListUserTodaTag(querier *dto.ListUserTodaTagQuerier) ([]*v
 func (s *TodaTagRepo) ListTodaTagByTodaIds(ids []uint) ([]*vo.TodaTagRefVO, error) {
 	var list []*vo.TodaTagRefVO
 	sql := s.tx.Table("t_toda_tag as tt").
-		Select("tt.*","ttr.id as toda_tag_ref_id",  "ttr.toda_id").
+		Select("tt.*", "ttr.id as toda_tag_ref_id", "ttr.toda_id").
 		InnerJoins(
 			"INNER JOIN t_toda_tag_ref as ttr ON tt.id=ttr.toda_tag_id",
 		).

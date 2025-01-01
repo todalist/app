@@ -31,6 +31,10 @@ func (s *UserTodaTagRepo) First(querier *dto.UserTodaTagQuerier) (*entity.UserTo
 	return list[0], nil
 }
 
+// Save a userTodaTag model.
+//
+// If the model is not exists, save it as a new record.
+// If the model is exists, update it.
 func (s *UserTodaTagRepo) Save(form *entity.UserTodaTag) (*entity.UserTodaTag, error) {
 	if form.Id == 0 {
 		if err := s.tx.Create(form).Error; err != nil {
@@ -42,6 +46,7 @@ func (s *UserTodaTagRepo) Save(form *entity.UserTodaTag) (*entity.UserTodaTag, e
 		tx.
 		Model(form).
 		Where("id = ?", form.Id).
+		Where("user_id = ?", form.UserId).
 		Where("updated_at <= ?", form.UpdatedAt).
 		Updates(form).Error; err != nil {
 		return nil, err

@@ -25,7 +25,7 @@ func (s *TodaTagService) First(ctx context.Context, querier *dto.TodaTagQuerier)
 	return todaTagRepo.First(querier)
 }
 
-func (s *TodaTagService) Save(ctx context.Context, form *entity.TodaTag) (*vo.UserTodaTagVO, error) {
+func (s *TodaTagService) Save(ctx context.Context, form *dto.TodaTagSaveDTO) (*vo.UserTodaTagVO, error) {
 	todaTagRepo := s.repo.GetTodaTagRepo(ctx)
 	userTodaTagRepo := s.repo.GetUserTodaTagRepo(ctx)
 	tokenUser := globals.MustTokenUserFromCtx(ctx)
@@ -53,7 +53,7 @@ func (s *TodaTagService) Save(ctx context.Context, form *entity.TodaTag) (*vo.Us
 		userTodaTagId = userTodaTag.Id
 		userId = userTodaTag.UserId
 	}
-	form, err := todaTagRepo.Save(form)
+	_, err := todaTagRepo.Save(&form.TodaTag)
 	if err != nil {
 		return nil, err
 	}
@@ -62,6 +62,7 @@ func (s *TodaTagService) Save(ctx context.Context, form *entity.TodaTag) (*vo.Us
 		userTodaTag, err := userTodaTagRepo.Save(&entity.UserTodaTag{
 			UserId:    form.OwnerUserId,
 			TodaTagId: form.Id,
+			PinTop:    form.PinTop,
 		})
 		if err != nil {
 			return nil, err
@@ -70,11 +71,19 @@ func (s *TodaTagService) Save(ctx context.Context, form *entity.TodaTag) (*vo.Us
 		userId = userTodaTag.UserId
 	}
 	v := &vo.UserTodaTagVO{
-		Tag:           form,
+		Tag:           &form.TodaTag,
 		UserTodaTagId: userTodaTagId,
 		UserId:        userId,
+		PinTop:        form.PinTop,
 	}
 	return v, nil
+}
+
+func (s *TodaTagService) SaveUserTodaTag(ctx context.Context, form *entity.UserTodaTag) (*entity.UserTodaTag, error) {
+	userTodaTagRepo := s.repo.GetUserTodaTagRepo(ctx)
+	tokenUser := globals.MustTokenUserFromCtx(ctx)
+	form.UserId = tokenUser.UserId
+	return userTodaTagRepo.Save(form)
 }
 
 func (s *TodaTagService) List(ctx context.Context, querier *dto.ListUserTodaTagQuerier) ([]*vo.UserTodaTagVO, error) {
