@@ -47,7 +47,6 @@ func (s *UserTodaTagRepo) Save(form *entity.UserTodaTag) (*entity.UserTodaTag, e
 		Model(form).
 		Where("id = ?", form.Id).
 		Where("user_id = ?", form.UserId).
-		Where("updated_at <= ?", form.UpdatedAt).
 		Updates(form).Error; err != nil {
 		return nil, err
 	}

@@ -113,6 +113,13 @@ func (r *TodaTagRouteImpl) Register(root fiber.Router) {
 	router.Post("/saveUserTodaTag", r.SaveUserTodaTag)
 }
 
+// NewTodaTagRoute creates a new implementation of todaTag.ITodaTagRoute.
+//
+// It takes a todaTag.ITodaTagService and returns a new instance of
+// TodaTagRouteImpl.
+//
+// The returned instance is a fiber.Router that implements the interface
+// methods of todaTag.ITodaTagRoute.
 func NewTodaTagRoute(todaTagService todaTag.ITodaTagService) todaTag.ITodaTagRoute {
 	return &TodaTagRouteImpl{
 		todaTagService: todaTagService,
