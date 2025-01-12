@@ -45,6 +45,7 @@ func (s *UserTodaTagRepo) Save(form *entity.UserTodaTag) (*entity.UserTodaTag, e
 	if err := s.
 		tx.
 		Model(form).
+		Select("pin_top").
 		Where("id = ?", form.Id).
 		Where("user_id = ?", form.UserId).
 		Updates(form).Error; err != nil {
