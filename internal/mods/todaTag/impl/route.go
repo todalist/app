@@ -100,7 +100,9 @@ func (r *TodaTagRouteImpl) SaveUserTodaTag(c fiber.Ctx) error {
 		globals.LOG.Error("userTodaTag save bind error", zap.String("error", err.Error()))
 		return fiber.ErrBadRequest
 	}
-	return api.Result(c).Or(r.todaTagService.SaveUserTodaTag(globals.MustTokenUserCtx(c), &form))
+	return api.Result(c).Or(globals.Transaction(func(tx *gorm.DB) (*entity.UserTodaTag, error) {
+			return r.todaTagService.SaveUserTodaTag(globals.DbCtx(globals.MustTokenUserCtx(c), tx), &form)
+		}))
 }
 
 func (r *TodaTagRouteImpl) Register(root fiber.Router) {

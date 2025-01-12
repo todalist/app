@@ -62,7 +62,7 @@ func (s *TodaService) Save(ctx context.Context, form *dto.TodaSaveDTO) (*vo.User
 			Toda: toda,
 		},
 	}
-	s.fillTodaVO(ctx, &[]*vo.UserTodaVO{userTodaVO})
+	s.fillTodaVO(ctx, []*vo.UserTodaVO{userTodaVO})
 	return userTodaVO, nil
 }
 
@@ -116,14 +116,16 @@ func (s *TodaService) List(ctx context.Context, querier *dto.ListUserTodaQuerier
 	if err != nil {
 		return nil, err
 	}
-	if err = s.fillTodaVO(ctx, &list); err != nil {
+	if err = s.fillTodaVO(ctx, list); err != nil {
 		return nil, err
 	}
 	return list, nil
 }
 
-func (s *TodaService) fillTodaVO(ctx context.Context, list *[]*vo.UserTodaVO) error {
-
+func (s *TodaService) fillTodaVO(ctx context.Context, list []*vo.UserTodaVO) error {
+	if len(list) == 0 {
+		return nil
+	}
 	todaTagRepo := s.repo.GetTodaTagRepo(ctx)
 	todaMap := common.ToFieldMap(list, func(t *vo.UserTodaVO) uint {
 		return t.Toda.Id
