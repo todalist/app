@@ -10,11 +10,11 @@ type Toda struct {
 	Title       string     `json:"title" `
 	Description string     `json:"description" `
 	OwnerUserId uint       `json:"userId" gorm:"index"`
-	Priority    int        `json:"priority" `
+	Priority    *int        `json:"priority" `
 	Deadline    *time.Time `json:"deadline" `
 	Status      int        `json:"status" `
-	Estimate    int        `json:"estimate" `
-	Elapsed     int        `json:"elapsed" `
+	Estimate    *int        `json:"estimate" `
+	Elapsed     *int        `json:"elapsed" `
 	CompletedAt *time.Time `json:"completedAt" `
 }
 

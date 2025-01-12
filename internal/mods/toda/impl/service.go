@@ -3,7 +3,6 @@ package todaImpl
 import (
 	"context"
 	"time"
-
 	"github.com/gofiber/fiber/v3"
 	"github.com/samber/lo"
 	"github.com/todalist/app/internal/common"
@@ -38,10 +37,6 @@ func (s *TodaService) Save(ctx context.Context, form *dto.TodaSaveDTO) (*vo.User
 		if err != nil {
 			return nil, err
 		}
-	}
-	if form.Priority == 0 {
-		// TODO to support user config
-		form.Priority = entity.TodaPriorityLow
 	}
 	toda, err := todaRepo.Save(&form.Toda)
 	if err != nil {
