@@ -1,6 +1,8 @@
 package todaTagImpl
 
 import (
+	"fmt"
+
 	"github.com/todalist/app/internal/common"
 	"github.com/todalist/app/internal/models/dto"
 	"github.com/todalist/app/internal/models/entity"
@@ -81,6 +83,11 @@ func (s *TodaTagRepo) ListUserTodaTag(querier *dto.ListUserTodaTagQuerier) ([]*v
 	}
 	if querier.UserTodaTagId != nil {
 		sql = sql.Where("utt.id = ?", querier.UserTodaTagId)
+	}
+	if querier.Name != nil {
+		// TODO: may need full text search
+		sql = sql.Where("tt.name like ? ", fmt.Sprintf("%%%s%%", *querier.Name))
+
 	}
 	sql = common.Paginate(sql, &querier.Pager)
 	if err := sql.Find(&list).Error; err != nil {
