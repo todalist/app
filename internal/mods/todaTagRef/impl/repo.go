@@ -63,7 +63,7 @@ func (s *TodaTagRefRepo) Delete(id uint) (uint, error) {
 }
 
 func (s *TodaTagRefRepo) DeleteByTodaId(todaId uint) (uint, error) {
-	if err := s.tx.Where("toda_id = ?", todaId).Delete(&entity.TodaTagRef{}).Error; err != nil {
+	if err := s.tx.Unscoped().Where("toda_id = ?", todaId).Delete(&entity.TodaTagRef{}).Error; err != nil {
 		return 0, err
 	}
 	return todaId, nil
