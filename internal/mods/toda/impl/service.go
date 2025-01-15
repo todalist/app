@@ -2,7 +2,6 @@ package todaImpl
 
 import (
 	"context"
-	"time"
 	"github.com/gofiber/fiber/v3"
 	"github.com/samber/lo"
 	"github.com/todalist/app/internal/common"
@@ -12,6 +11,7 @@ import (
 	"github.com/todalist/app/internal/models/vo"
 	"github.com/todalist/app/internal/repo"
 	"go.uber.org/zap"
+	"time"
 )
 
 type TodaService struct {
@@ -52,6 +52,18 @@ func (s *TodaService) Save(ctx context.Context, form *dto.TodaSaveDTO) (*vo.User
 			return nil, err
 		}
 	}
+	// handle tags
+	todaTagRefRepo := s.repo.GetTodaTagRefRepo(ctx)
+	if _, err = todaTagRefRepo.DeleteByTodaId(toda.Id); err != nil {
+		return nil, err
+	}
+
+	if len(form.Tags) > 0 {
+		if err = todaTagRefRepo.SaveTagRefs(toda.Id, form.Tags); err != nil {
+			return nil, err
+		}
+	}
+
 	userTodaVO := &vo.UserTodaVO{
 		TodaVO: &vo.TodaVO{
 			Toda: toda,

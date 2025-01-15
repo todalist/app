@@ -62,6 +62,30 @@ func (s *TodaTagRefRepo) Delete(id uint) (uint, error) {
 	return id, nil
 }
 
+func (s *TodaTagRefRepo) DeleteByTodaId(todaId uint) (uint, error) {
+	if err := s.tx.Where("toda_id = ?", todaId).Delete(&entity.TodaTagRef{}).Error; err != nil {
+		return 0, err
+	}
+	return todaId, nil
+}
+
+func (s *TodaTagRefRepo) SaveTagRefs(todaId uint, tagIds []uint) error {
+	if err := s.tx.Where("toda_id = ?", todaId).Delete(&entity.TodaTagRef{}).Error; err != nil {
+		return err
+	}
+	all := make([]*entity.TodaTagRef, 0, len(tagIds))
+	for _, tagId := range tagIds {
+		all = append(all, &entity.TodaTagRef{
+			TodaId:    todaId,
+			TodaTagId: tagId,
+		})
+	}
+	if err := s.tx.CreateInBatches(all, len(all)).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
 func NewTodaTagRefRepo(tx *gorm.DB) todaTagRef.ITodaTagRefRepo {
 	return &TodaTagRefRepo{
 		tx: tx,

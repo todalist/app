@@ -18,4 +18,8 @@ type ITodaTagRefRepo interface {
 
 	Delete(uint) (uint, error)
 
+	DeleteByTodaId(uint) (uint, error)
+
+	SaveTagRefs(todaId uint, tagIds []uint) error
+
 }
