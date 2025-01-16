@@ -89,6 +89,9 @@ func (s *TodaTagRepo) ListUserTodaTag(querier *dto.ListUserTodaTagQuerier) ([]*v
 		sql = sql.Where("tt.name like ? ", fmt.Sprintf("%%%s%%", *querier.Name))
 
 	}
+	if querier.Ids != nil {
+		sql = sql.Where("tt.id IN ?", *querier.Ids)
+	}
 	sql = common.Paginate(sql, &querier.Pager)
 	if err := sql.Find(&list).Error; err != nil {
 		return nil, err

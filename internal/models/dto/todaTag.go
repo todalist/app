@@ -8,6 +8,7 @@ import (
 type TodaTagQuerier struct {
 	common.Pager
 	Id          *uint   `json:"id"`
+	Ids         *[]uint `json:"ids" gorm:"-"`
 	Name        *string `json:"name" gorm:"-"`
 	AccentColor *string `json:"accentColor"`
 	OwnerUserId *uint   `json:"userId"`
@@ -15,5 +16,5 @@ type TodaTagQuerier struct {
 
 type TodaTagSaveDTO struct {
 	entity.TodaTag `json:"todaTag"`
-	PinTop bool `json:"pinTop"`
+	PinTop         bool `json:"pinTop"`
 }
