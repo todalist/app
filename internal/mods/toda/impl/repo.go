@@ -79,7 +79,7 @@ func (s *TodaRepo) ListUserToda(querier *dto.ListUserTodaQuerier) ([]*vo.UserTod
 			Joins("INNER JOIN t_toda_tag_ref as ttr on ttr.toda_id=t.id").
 			Where("ttr.toda_tag_id = ?", querier.TodaTagId)
 	}
-	sql = common.Paginate(sql, &querier.Pager)
+	sql = common.Paginate(sql, &querier.Pager).Order("updated_at DESC")
 	if err := sql.Find(&list).Error; err != nil {
 		return nil, err
 	}
