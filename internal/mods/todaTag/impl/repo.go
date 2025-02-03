@@ -115,6 +115,6 @@ func (s *TodaTagRepo) ListTodaTagByTodaIds(ids []uint) ([]*vo.TodaTagRefVO, erro
 
 func NewTodaTagRepo(tx *gorm.DB) todaTag.ITodaTagRepo {
 	return &TodaTagRepo{
-		tx: tx,
+		tx: tx, 
 	}
 }
